@@ -11,10 +11,10 @@ import ProtectedRoute from './components/ProtectedRoute'
 
 import HomePage from './pages/Home'
 
-import SingleAppointment from "./pages/appointments/SingleAppointment";
-import CreateAppointment from './pages/appointments/Create';
-import EditAppointment from './pages/appointments/Edit';
-import HomeAppointment from "./pages/appointments/Home";
+//import SingleVenue from "./pages/venues/SingleVenue";
+import CreateVenue from './pages/venues/Create';
+//import EditVenue from './pages/venues/Edit';
+import HomeVenue from "./pages/venues/Home";
 
 
 
@@ -43,10 +43,10 @@ const App = () => {
                        
                                 {/* Appointment routes */}                                
                                 <Route path='/' element={<ProtectedRoute />}>
-                                    <Route path='/appointments/create' element={<CreateAppointment />} />
-                                    <Route path='/pages/appointments/' element={<HomeAppointment />} />
-                                    <Route path='/appointments/:id/edit' element={<EditAppointment />} />
-                                    <Route path='/appointments/:id' element={<SingleAppointment />} />
+                                    <Route path='/venues/Create' element={<CreateVenue />} />
+                                    <Route path='/pages/venues/' element={<HomeVenue />} />
+                                    {/* <Route path='/venues/:id/edit' element={<EditVenue />} /> */}
+                                    {/* <Route path='/venues/:id' element={<SingleVenue />} /> */}
                                 </Route>
                         
 

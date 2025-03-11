@@ -1,61 +1,54 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import axios from 'axios'
+import React, { createContext, useContext, useState } from 'react';
+import axios from 'axios';
 
-// create context, which will store some state
-// we don't bother exporting this, as we will only use it in this file
+// Create context, which will store some state
 const AuthContext = createContext();
 
-// inside our components, we could directly call useContext(AuthContext) to get the current value of the context
-// instead we just make this custom hook to make it easier to use
+// Custom hook to use the AuthContext
 export const useAuth = () => {
     return useContext(AuthContext);
 };
 
-// chidren is a special prop
-// it's like a placeholder for whatever JSX is going to be rendered inside this component
-// meaning we can call <AuthProvider> {some jsx goes here} </AuthProvider>
+// AuthProvider component
 export const AuthProvider = ({ children }) => {
-    // on initial load, check if there is a token in local storage
-    // we're creating a state variable and setting its initial value using a function
-    // this would be just the same as initialising the state to null, then setting it in a useEffect
+    // State for token and id
     const [token, setToken] = useState(() => {
-
-        if (localStorage.getItem('token')) {
-            return localStorage.getItem('token');
-        }
-        else {
-            return null;
-        }
+        return localStorage.getItem('token') || null;
     });
 
     const [id, setId] = useState(() => {
-
-        if (localStorage.getItem('id')) {
-            return localStorage.getItem('id');
-        }
-        else {
-            return null;
-        }
+        return localStorage.getItem('id') || null;
     });
 
     const login = (email, password) => {
-        // do login stuff...
-        // set localStorage token
-        // set token in state
         axios
             .post(`https://hall-pass-main-ea0ukq.laravel.cloud/api/login`, {
                 email,
                 password,
             })
             .then((res) => {
-                setToken(res.data.token);
-                setId(res.data.token.charAt(0))
-                localStorage.setItem("token", res.data.token);
-                localStorage.setItem("id", res.data.token.charAt(0));
+                console.log("API Response:", res.data); // Log the entire response
+
+                if (res.data.success) {
+                    const token = res.data.data.token; // Access the token correctly
+                    console.log("Token received:", token); // Log the token to verify
+
+                    setToken(token); // Set the token in state
+                    localStorage.setItem("token", token); // Store the token in local storage
+
+                    // Extract the user ID from the token (all characters before the pipe)
+                    const userId = token.split('|')[0]; // Get the part before the pipe
+                    console.log("User ID extracted:", userId); // Log the user ID
+
+                    setId(userId); // Set the ID in state
+                    localStorage.setItem("id", userId); // Store the ID in local storage
+                } else {
+                    alert(res.data.message); // Handle unsuccessful login
+                }
             })
             .catch((err) => {
-                console.error(err);
-                alert('Login failed')
+                console.error("Login error:", err); // Log the error
+                alert('Login failed');
             });
     };
 

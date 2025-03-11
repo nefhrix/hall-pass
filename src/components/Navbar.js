@@ -23,26 +23,13 @@ const Navbar = () => {
                     Home
                 </Button>
                 
-                <Button  component={Link} rightIcon={<IconStethoscope />}      size={'xl'} variant={"outline"} to='/pages/doctors/'>
-                    Doctors
-                </Button>
+            
 
-                <Button component={Link}rightIcon={<IconUser />}     size={'xl'} color={'yellow'} variant={'filled'} to='/pages/patients/'>
-                    Patients
-                </Button>
+             
 
-                <Button component={Link}    size={'xl'} rightIcon={<IconReportMedical />} to='/pages/appointments'>
-                    Booked Appointments
+                <Button component={Link}   size={'xl'} rightIcon={<IconLock />} to='/pages/venues/'>
+                    Venues
                 </Button>
-
-                <Button component={Link}    size={'xl'} rightIcon={<IconReport />} to='/pages/diagnoses'>
-                    Previous diagnoses
-                </Button>
-
-                <Button component={Link}    size={'xl'} rightIcon={<IconPillFilled />} to='/pages/prescriptions'>
-                    Previous Prescriptions
-                </Button>
-
 
                 <Button component={Link}   size={'xl'} rightIcon={<IconLock />} to='/register'>
                     Register

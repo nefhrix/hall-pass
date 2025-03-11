@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useParams, Link } from "react-router-dom";
 import { useAuth } from "../../utils/useAuth";
 
-const SingleAppointment = () => {
+const SingleVenue = () => {
     const { token } = useAuth();
     const [appointment, setAppointment] = useState(null);
     const [doctor, setDoctor] = useState(null);
@@ -69,4 +69,4 @@ const SingleAppointment = () => {
     );
 };
 
-export default SingleAppointment;
+export default SingleVenue;

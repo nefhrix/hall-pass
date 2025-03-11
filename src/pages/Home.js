@@ -17,7 +17,7 @@ const HomePage = () => {
                         Our clinic offers a wide range of healthcare services, from routine check-ups to specialized treatments. Our team of experienced doctors is here to support your health.
                     </Text>
                     <Flex justify="center" mt="md" style={{ marginBottom: '40px'}}>
-                        <Button onClick={() => navigate('/appointments/create')} size="lg">Book an Appointment</Button>
+                        <Button onClick={() => navigate('/venues/create')} size="lg">Book an Appointment</Button>
                     </Flex>
                 </Stack>
             </Paper>
