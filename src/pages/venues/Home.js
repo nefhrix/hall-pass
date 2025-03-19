@@ -14,8 +14,14 @@ const Home = () => {
 
     // Fetch all venues with auth headers
     const getVenues = async () => {
+
+        let url = `/api/venues`;
+        // if(role === 2){
+        //     url = `/api/venues/user`;
+        // }
+
         try {
-            const res = await axios.get(`https://hall-pass-main-ea0ukq.laravel.cloud/api/venues`, {
+            const res = await axios.get(`https://hall-pass-main-ea0ukq.laravel.cloud${url}`, {
                 headers: {
                     Authorization: `Bearer ${token}` // Adding auth header
                 }
@@ -26,6 +32,12 @@ const Home = () => {
             console.error("Error fetching Venues:", e);
         }
     };
+
+    // public function getUserVenues(){
+
+    //     $venues = Venues::where('user_id', '=', Auth::id());
+    //     return venues;
+    // }
 
     // Fetch venues on component mount
     useEffect(() => {
@@ -57,6 +69,11 @@ const Home = () => {
                         </ul>
                         <Flex w="100%" justify="space-between">
                             <button onClick={() => navigate(`/venues/${venue.id}`)}>View</button>
+                            {/* {(role === 2) ? (
+                                <>
+                                <button onClick={() => navigate(`/venues/edit/${venue.id}`)}>Edit</button>
+                           </>
+                            ) : ""} */}
                         </Flex>
                     </Card>
                 ))}

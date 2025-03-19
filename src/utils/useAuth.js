@@ -16,6 +16,7 @@ export const AuthProvider = ({ children }) => {
         return localStorage.getItem('token') || null;
     });
 
+
    
 
     const login = (email, password) => {
