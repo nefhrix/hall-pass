@@ -19,7 +19,7 @@ const CreateVenue = () => {
             headers: { Authorization: `Bearer ${token}` },
         })
             .then((res) => {
-                setUserId(res.data.id); // Store the user ID from response
+                setUserId(res.data.data.id); // Store the user ID from response
             })
             .catch((err) => {
                 console.error('Error fetching user ID:', err);

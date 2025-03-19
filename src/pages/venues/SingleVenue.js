@@ -20,7 +20,7 @@ const SingleVenue = () => {
                 const res = await axios.get(`https://hall-pass-main-ea0ukq.laravel.cloud/api/venues/${id}`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
-                setVenue(res.data);
+                setVenue(res.data.data);
                 setLoading(false);
             } catch (err) {
                 console.error("Error fetching venue details:", err);
@@ -67,6 +67,12 @@ const SingleVenue = () => {
             <Button color="red" mt={10} onClick={handleDelete}>
                 Delete Venue
             </Button>
+
+            <Link to={`/venues/${id}/edit`}>
+                <Button mt={10} variant="filled" ml={10} color="blue">
+                    Edit Venue
+                </Button>
+            </Link>
 
             <Link to="/venues">
                 <Button mt={10} variant="outline" ml={10}>

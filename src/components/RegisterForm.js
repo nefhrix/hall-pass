@@ -41,6 +41,7 @@ const RegisterForm = () => {
   return (
     <Container size="md" p="sm">
       <form onSubmit={handleSubmit}>
+        <h1>Register For HallPass</h1>
         <Stack spacing="md">
           <TextInput
             label="Name"

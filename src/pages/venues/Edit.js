@@ -12,7 +12,8 @@ const EditVenue = () => {
 
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-
+    const [userId, setUserId] = useState(null); // Store user ID from API
+    
     const form = useForm({
         initialValues: {
             address_line_one: '',
@@ -21,6 +22,7 @@ const EditVenue = () => {
             eircode: '',
             description: '',
             contact: '',
+            user_id: '' // Include user_id in form state
         },
         validate: {
             address_line_one: (value) => (value ? null : 'Address Line One is required'),
@@ -47,8 +49,23 @@ const EditVenue = () => {
             });
     }, [id, token]);
 
+    useEffect(() => {
+        // Fetch user ID from the API
+        axios.get('https://hall-pass-main-ea0ukq.laravel.cloud/api/user', {
+            headers: { Authorization: `Bearer ${token}` },
+        })
+            .then((res) => {
+                const user_id = res.data.data.id;
+                setUserId(user_id); // Store the user ID
+                form.setFieldValue("user_id", user_id); // Set user_id in form values
+            })
+            .catch((err) => {
+                console.error('Error fetching user ID:', err);
+            });
+    }, [token]);
+
     const handleSubmit = (values) => {
-        axios.patch(`https://hall-pass-main-ea0ukq.laravel.cloud/api/venues/${id}`, values, {
+        axios.patch(`https://hall-pass-main-ea0ukq.laravel.cloud/api/venues/${id}`, { ...values, user_id: userId }, {
             headers: { Authorization: `Bearer ${token}` },
         })
             .then((res) => {
@@ -109,6 +126,9 @@ const EditVenue = () => {
                     placeholder="Enter Contact Number"
                     {...form.getInputProps('contact')}
                 />
+
+                {/* Hidden Input for User ID */}
+                <input type="hidden" {...form.getInputProps('user_id')} />
 
                 <Button mt={10} type="submit">Save Changes</Button>
             </form>
