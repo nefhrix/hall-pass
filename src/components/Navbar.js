@@ -4,7 +4,7 @@ import { useAuth } from '../utils/useAuth';
 // We don't want the name 'Navbar' to conflict with the Mantine component of the same name
 // So we use an alias 'MantineNavbar' to refer to the Mantine component
 import {Navbar as MantineNavbar, Button, Stack} from '@mantine/core';
-import { IconArrowRight , IconLogin, IconLogout, IconStethoscope, IconLock, IconReportMedical, IconUser, IconReport, IconPillFilled } from '@tabler/icons-react';
+import { IconArrowRight , IconLogin, IconLogout, IconLock } from '@tabler/icons-react';
 
 const Navbar = () => {
     const { logout, token } = useAuth();

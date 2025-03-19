@@ -11,9 +11,9 @@ import ProtectedRoute from './components/ProtectedRoute'
 
 import HomePage from './pages/Home'
 
-//import SingleVenue from "./pages/venues/SingleVenue";
+import SingleVenue from "./pages/venues/SingleVenue";
 import CreateVenue from './pages/venues/Create';
-//import EditVenue from './pages/venues/Edit';
+import EditVenue from './pages/venues/Edit';
 import HomeVenue from "./pages/venues/Home";
 
 
@@ -45,8 +45,8 @@ const App = () => {
                                 <Route path='/' element={<ProtectedRoute />}>
                                     <Route path='/venues/Create' element={<CreateVenue />} />
                                     <Route path='/pages/venues/' element={<HomeVenue />} />
-                                    {/* <Route path='/venues/:id/edit' element={<EditVenue />} /> */}
-                                    {/* <Route path='/venues/:id' element={<SingleVenue />} /> */}
+                                     <Route path='/venues/:id/edit' element={<EditVenue />} /> 
+                                     <Route path='/venues/:id' element={<SingleVenue />} /> 
                                 </Route>
                         
 

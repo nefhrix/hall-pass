@@ -1,113 +1,119 @@
-import { useEffect } from "react";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
-import { useParams } from "react-router-dom";
+import axios from 'axios';
+import { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useAuth } from "../../utils/useAuth";
-import { useForm } from "@mantine/form";
-import { Text, TextInput, Select, Button } from "@mantine/core";
+import { useForm } from '@mantine/form';
+import { TextInput, Button, Text, Loader, Alert } from "@mantine/core";
 
-const Edit = () => {
-    const { token } = useAuth();
+const EditVenue = () => {
+    const { token } = useAuth(); 
     const navigate = useNavigate();
-    const { id } = useParams();
+    const { id } = useParams(); // Get venue ID from URL params
 
-    const specialisations = [
-        "Podiatrist",
-        "Dermatologist",
-        "Pediatrician",
-        "Psychiatrist",
-        "General Practitioner"
-    ];
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
-    // Mantine form hook for managing form state and validation
     const form = useForm({
         initialValues: {
-            first_name: "",
-            last_name: "",
-            email: "",
-            phone: "",
-            specialisation: ""
+            address_line_one: '',
+            town: '',
+            county: '',
+            eircode: '',
+            description: '',
+            contact: '',
         },
         validate: {
-            first_name: (value) => (value ? null : "First name is required"),
-            last_name: (value) => (value ? null : "Last name is required"),
-            email: (value) => (/^\S+@\S+$/.test(value) ? null : "Invalid email"),
-            phone: (value) => (value ? null : "Phone is required"),
-            specialisation: (value) => (value ? null : "Specialisation is required")
-        }
+            address_line_one: (value) => (value ? null : 'Address Line One is required'),
+            town: (value) => (value ? null : 'Town is required'),
+            county: (value) => (value ? null : 'County is required'),
+            eircode: (value) => (value ? null : 'Eircode is required'),
+            description: (value) => (value ? null : 'Description is required'),
+            contact: (value) => (value ? null : 'Contact number is required'),
+        },
     });
 
     useEffect(() => {
-        axios.get(`https://fed-medical-clinic-api.vercel.app/doctors/${id}`, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
+        axios.get(`https://hall-pass-main-ea0ukq.laravel.cloud/api/venues/${id}`, {
+            headers: { Authorization: `Bearer ${token}` },
         })
             .then((res) => {
-                
-                form.setValues(res.data); // Populate the form with the existing data
+                form.setValues(res.data); // Populate the form with existing venue data
+                setLoading(false);
             })
             .catch((err) => {
-                console.error("Failed to load doctor details:", err);
+                console.error('Error fetching venue:', err);
+                setError('Failed to load venue details');
+                setLoading(false);
             });
     }, [id, token]);
 
     const handleSubmit = (values) => {
-   
-        axios.patch(`https://fed-medical-clinic-api.vercel.app/doctors/${id}`, values, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
+        axios.patch(`https://hall-pass-main-ea0ukq.laravel.cloud/api/venues/${id}`, values, {
+            headers: { Authorization: `Bearer ${token}` },
         })
             .then((res) => {
-              
-                navigate(`/doctors/${id}`, { replace: true });
+                console.log('Venue updated:', res.data);
+                navigate(`/venues/${id}`);
             })
             .catch((err) => {
-                console.error("Failed to update doctor:", err);
+                console.error('Error updating venue:', err);
+                setError('Failed to update venue');
             });
     };
 
+    if (loading) return <Loader size="lg" />; // Show loader while fetching data
+    if (error) return <Alert color="red">{error}</Alert>; // Show error if fetching failed
+
     return (
         <div>
-            <Text size={24} mb={5}>Edit Doctor</Text>
+            <Text size={24} mb={5}>Edit Venue</Text>
             <form onSubmit={form.onSubmit(handleSubmit)}>
                 <TextInput
+                    label="Address Line One"
                     withAsterisk
-                    label="First name"
-                    name="first_name"
-                    {...form.getInputProps("first_name")}
+                    placeholder="Enter Address Line One"
+                    {...form.getInputProps('address_line_one')}
                 />
+
                 <TextInput
+                    label="Town"
                     withAsterisk
-                    label="Last name"
-                    name="last_name"
-                    {...form.getInputProps("last_name")}
+                    placeholder="Enter Town"
+                    {...form.getInputProps('town')}
                 />
-                <Select
-                    withAsterisk
-                    name="specialisation"
-                    label="Specialisation"
-                    placeholder="Pick one"
-                    data={specialisations.map((spec) => ({ value: spec, label: spec }))}
-                    {...form.getInputProps("specialisation")}
-                />
+
                 <TextInput
+                    label="County"
                     withAsterisk
-                    label="Email"
-                    name="email"
-                    {...form.getInputProps("email")}
+                    placeholder="Enter County"
+                    {...form.getInputProps('county')}
                 />
+
                 <TextInput
+                    label="Eircode"
                     withAsterisk
-                    label="Phone"
-                    name="phone"
-                    {...form.getInputProps("phone")}
+                    placeholder="Enter Eircode"
+                    {...form.getInputProps('eircode')}
                 />
+
+                <TextInput
+                    label="Description"
+                    withAsterisk
+                    placeholder="Enter Description"
+                    {...form.getInputProps('description')}
+                />
+
+                <TextInput
+                    label="Contact"
+                    withAsterisk
+                    placeholder="Enter Contact Number"
+                    {...form.getInputProps('contact')}
+                />
+
                 <Button mt={10} type="submit">Save Changes</Button>
             </form>
         </div>
     );
 };
 
-export default Edit;
+export default EditVenue;

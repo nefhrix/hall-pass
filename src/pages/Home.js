@@ -11,7 +11,7 @@ const HomePage = () => {
             <Paper padding="xl" shadow="sm" style={{ marginBottom: '100px', backgroundColor: '#f7f7f7' }}>
                 <Stack align="center">
                     <Title order={1} align="center" style={{ marginBottom: '20px' }}>
-                        Welcome to Our Clinic
+                        Welcome to Hall-Pass
                     </Title>
                     <Text align="center" size="lg" style={{ maxWidth: '800px' }}>
                         Our clinic offers a wide range of healthcare services, from routine check-ups to specialized treatments. Our team of experienced doctors is here to support your health.
