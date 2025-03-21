@@ -5,25 +5,22 @@ import { useAuth } from "../../utils/useAuth";
 import { useForm } from '@mantine/form';
 import { TextInput, Button, Text } from "@mantine/core";
 
-
 const CreateVenue = () => {
     const { token } = useAuth(); // Get token for authentication
     const navigate = useNavigate();
-
-    
     const [userId, setUserId] = useState(null); // Store user ID from API
 
     useEffect(() => {
-        // Fetch user ID from the API
         axios.get('https://hall-pass-main-ea0ukq.laravel.cloud/api/user', {
             headers: { Authorization: `Bearer ${token}` },
         })
-            .then((res) => {
-                setUserId(res.data.data.id); // Store the user ID from response
-            })
-            .catch((err) => {
-                console.error('Error fetching user ID:', err);
-            });
+        .then((res) => {
+            console.log("User API Response:", res.data); // Log full user data
+            setUserId(res.data.id); // Ensure we correctly fetch the user ID
+        })
+        .catch((err) => {
+            console.error('Error fetching user ID:', err.response?.data || err);
+        });
     }, [token]);
 
     const form = useForm({
@@ -45,72 +42,67 @@ const CreateVenue = () => {
         },
     });
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         if (!userId) {
             console.error('User ID is not available');
             return;
         }
 
-      
-
         const data = { 
             user_id: userId, 
-            
             ...form.values 
         };
 
-        axios.post('https://hall-pass-main-ea0ukq.laravel.cloud/api/venues', data, {
-            headers: { Authorization: `Bearer ${token}` },
-        })
-            .then((res) => {
-                console.log(res.data);
-                navigate(`/venues/${res.data.id}`);
-            })
-            .catch((err) => {
-                console.error(err);
-            });
+        try {
+            const res = await axios.post(
+                'https://hall-pass-main-ea0ukq.laravel.cloud/api/venues',
+                data,
+                { headers: { Authorization: `Bearer ${token}` } }
+            );
+            
+            console.log("Venue Created:", res.data);
+
+            // Navigate to the user's venues page
+            navigate('/userVenues', { state: { msg: 'Venue created successfully!' } });
+        } catch (err) {
+            console.error("Error creating venue:", err.response?.data || err);
+        }
     };
 
     return (
         <div>
             <Text size={24} mb={5}>Create a venue</Text>
             <form onSubmit={form.onSubmit(handleSubmit)}>
-                
                 <TextInput
                     label="Address Line One"
                     withAsterisk
                     placeholder="Enter Address Line One"
                     {...form.getInputProps('address_line_one')}
                 />
-
                 <TextInput
                     label="Town"
                     withAsterisk
                     placeholder="Enter Town"
                     {...form.getInputProps('town')}
                 />
-
                 <TextInput
                     label="County"
                     withAsterisk
                     placeholder="Enter County"
                     {...form.getInputProps('county')}
                 />
-
                 <TextInput
                     label="Eircode"
                     withAsterisk
                     placeholder="Enter Eircode"
                     {...form.getInputProps('eircode')}
                 />
-
                 <TextInput
                     label="Description"
                     withAsterisk
                     placeholder="Enter Description"
                     {...form.getInputProps('description')}
                 />
-
                 <TextInput
                     label="Contact"
                     withAsterisk

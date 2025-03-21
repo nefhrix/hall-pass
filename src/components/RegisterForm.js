@@ -20,15 +20,27 @@ const RegisterForm = () => {
     e.preventDefault();
 
     axios
-      .post(`https://hall-pass-main-ea0ukq.laravel.cloud/api/register`, form)
-      .then((res) => {
-        localStorage.setItem("user", JSON.stringify(res.data.user));
-        login(form.email, form.password);
-        navigate("/");
-      })
-      .catch((err) => {
-        console.error(err);
-      });
+  .post(`https://hall-pass-main-ea0ukq.laravel.cloud/api/register`, form)
+  .then((res) => {
+    console.log("Full API Response:", res.data); // Debugging step
+
+    if (res.data.success && res.data.data) {
+      const userData = {
+        id: res.data.data.roles?.[0]?.pivot?.user_id || null, // Extract user ID safely
+        name: res.data.data.name,
+        roles: res.data.data.roles,
+      };
+
+      localStorage.setItem("user", JSON.stringify(userData)); // Store user data correctly
+      login(form.email, form.password); // Log in after successful registration
+      navigate("/");
+    } else {
+      console.error("Unexpected API response structure:", res.data);
+    }
+  })
+  .catch((err) => {
+    console.error("Registration error:", err);
+  });
   };
 
   const handleChange = (e) => {

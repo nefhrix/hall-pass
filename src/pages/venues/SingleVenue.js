@@ -10,10 +10,31 @@ const SingleVenue = () => {
     const { id } = useParams();
 
     const [venue, setVenue] = useState(null);
+    const [roleId, setRoleId] = useState(null); // Store user's role ID
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [deleteError, setDeleteError] = useState(null);
     const [hallDeleteError, setHallDeleteError] = useState(null);
+
+    // Fetch user role
+    const fetchUserRole = async () => {
+        try {
+            const res = await axios.get(`https://hall-pass-main-ea0ukq.laravel.cloud/api/user`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+
+            if (res.data.roles.length > 0) {
+                setRoleId(res.data.roles[0].id); // Store role ID
+                console.log("Fetched Role ID:", res.data.roles[0].id);
+            }
+        } catch (err) {
+            console.error("Error fetching user role:", err);
+        }
+    };
+
+    useEffect(() => {
+        fetchUserRole();
+    }, [token]);
 
     useEffect(() => {
         const fetchVenue = async () => {
@@ -85,21 +106,25 @@ const SingleVenue = () => {
 
             {deleteError && <Alert color="red">{deleteError}</Alert>}
 
-            <Button color="red" mt={10} onClick={handleDeleteVenue}>
-                Delete Venue
-            </Button>
+            {roleId === 2 && (
+                <>
+                    <Button color="red" mt={10} onClick={handleDeleteVenue}>
+                        Delete Venue
+                    </Button>
 
-            <Link to={`/venues/${id}/edit`}>
-                <Button mt={10} variant="filled" ml={10} color="blue">
-                    Edit Venue
-                </Button>
-            </Link>
+                    <Link to={`/venues/${id}/edit`}>
+                        <Button mt={10} variant="filled" ml={10} color="blue">
+                            Edit Venue
+                        </Button>
+                    </Link>
 
-            <Link to={`/halls/create/${id}`}>
-                <Button mt={10} variant="filled" ml={10} color="blue">
-                    Add a hall
-                </Button>
-            </Link>
+                    <Link to={`/halls/create/${id}`}>
+                        <Button mt={10} variant="filled" ml={10} color="blue">
+                            Add a hall
+                        </Button>
+                    </Link>
+                </>
+            )}
 
             <Link to="/pages/venues">
                 <Button mt={10} variant="outline" ml={10}>
@@ -121,14 +146,23 @@ const SingleVenue = () => {
                                 <Text><strong>Price per Hour:</strong> €{hall.price_per_hour}</Text>
                             </Group>
                             <Group mt={10}>
-                                <Link to={`/halls/${hall.id}/edit?venue_id=${id}`}>
-                                    <Button variant="light" color="blue">
-                                        Edit Hall
-                                    </Button>
+                                <Link to={`/halls/${hall.id}`}>
+                                    <Button variant="light" color="blue">View Hall</Button>
                                 </Link>
-                                <Button color="red" onClick={() => handleDeleteHall(hall.id)}>
-                                    Delete Hall
-                                </Button>
+
+                                {roleId === 2 && (
+                                    <>
+                                        <Link to={`/halls/${hall.id}/edit?venue_id=${id}`}>
+                                            <Button variant="light" color="blue">
+                                                Edit Hall
+                                            </Button>
+                                        </Link>
+
+                                        <Button color="red" onClick={() => handleDeleteHall(hall.id)}>
+                                            Delete Hall
+                                        </Button>
+                                    </>
+                                )}
                             </Group>
                         </Card>
                     ))}

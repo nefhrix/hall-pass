@@ -11,10 +11,10 @@ const CreateHall = () => {
     const { id } = useParams();
     
     const sportsOptions = [
-        { value: 1, label: "Sport 1" },
-        { value: 2, label: "Sport 2" },
-        { value: 3, label: "Sport 3" },
-        { value: 4, label: "Sport 4" },
+        { value: 1, label: "Football" },
+        { value: 2, label: "Basketball" },
+        { value: 3, label: "Volleyball" },
+        { value: 4, label: "Badminton" },
     ];
 
     const [venueId, setVenueId] = useState(null);
@@ -62,7 +62,7 @@ const CreateHall = () => {
             headers: { Authorization: `Bearer ${token}` },
         })
             .then((res) => {
-                navigate(`/venues/${res.data.data.id}`);
+                navigate(`/venues/${id}`);
             })
             .catch((err) => {
                 console.error(err);

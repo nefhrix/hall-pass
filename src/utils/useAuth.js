@@ -1,67 +1,101 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 import axios from 'axios';
 
-// Create context, which will store some state
+// Create the Auth Context
 const AuthContext = createContext();
 
-// Custom hook to use the AuthContext
+// Hook to use the Auth Context
 export const useAuth = () => {
     return useContext(AuthContext);
 };
 
-// AuthProvider component
+// AuthProvider Component
 export const AuthProvider = ({ children }) => {
-    // State for token and id
-    const [token, setToken] = useState(() => {
-        return localStorage.getItem('token') || null;
-    });
+    const [token, setToken] = useState(() => localStorage.getItem('token') || null);
+    const [user, setUser] = useState(() => JSON.parse(localStorage.getItem('user')) || null);
 
+    // Fetch user details when token is available
+    useEffect(() => {
+        if (token && !user) {
+            fetchUserDetails(token);
+        }
+    }, [token]);
 
-   
+    // Fetch user details
+    const fetchUserDetails = async (token) => {
+        try {
+            const res = await axios.get(`https://hall-pass-main-ea0ukq.laravel.cloud/api/user`, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+            console.log("Fetched User Data:", res.data);
 
+            const userData = {
+                id: res.data.id,
+                name: res.data.name,
+                roles: res.data.roles || [],
+            };
+
+            setUser(userData);
+            localStorage.setItem("user", JSON.stringify(userData));
+        } catch (err) {
+            console.error("Error fetching user data:", err);
+            logout(); // Logout if fetching user data fails
+        }
+    };
+
+    // Login function
     const login = (email, password) => {
-        axios
-            .post(`https://hall-pass-main-ea0ukq.laravel.cloud/api/login`, {
-                email,
-                password,
-            })
+        axios.post(`https://hall-pass-main-ea0ukq.laravel.cloud/api/login`, { email, password })
             .then((res) => {
-                console.log("API Response:", res.data); // Log the entire response
-
-                if (res.data.success) {
-                    const token = res.data.data.token; // Access the token correctly
-                    console.log("Token received:", token); // Log the token to verify
-
-                    setToken(token); // Set the token in state
-                    localStorage.setItem("token", token); // Store the token in local storage
-
-                    // Extract the user ID from the token (all characters before the pipe)
-                    
-
-                    
+                console.log("Login API Response:", res.data); // Debug the response
+    
+                if (res.data.success && res.data.data) {
+                    const token = res.data.data.token;
+                    setToken(token);
+                    localStorage.setItem("token", token);
+    
+                    // Fetch user details after getting the token
+                    axios.get(`https://hall-pass-main-ea0ukq.laravel.cloud/api/user`, {
+                        headers: { Authorization: `Bearer ${token}` },
+                    })
+                    .then((userRes) => {
+                        console.log("Fetched User Data:", userRes.data); // Debug user data
+    
+                        const userData = {
+                            id: userRes.data.id, 
+                            name: userRes.data.name,
+                            roles: userRes.data.roles,
+                        };
+    
+                        setUser(userData);
+                        localStorage.setItem("user", JSON.stringify(userData));
+                    })
+                    .catch((userErr) => {
+                        console.error("Error fetching user data:", userErr);
+                    });
                 } else {
-                    alert(res.data.message); // Handle unsuccessful login
+                    console.error("Unexpected login response structure:", res.data);
+                    alert(res.data.message || "Login failed");
                 }
             })
             .catch((err) => {
-                console.error("Login error:", err); // Log the error
+                console.error("Login error:", err.response?.data || err);
                 alert('Login failed');
             });
     };
+    
 
+    // Logout function
     const logout = () => {
         localStorage.removeItem('token');
+        localStorage.removeItem('user');
         setToken(null);
-        
- 
+        setUser(null);
     };
 
-    const value = {
-        
-        token,
-        login,
-        logout,
-    };
-
-    return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+    return (
+        <AuthContext.Provider value={{ token, user, login, logout }}>
+            {children}
+        </AuthContext.Provider>
+    );
 };

@@ -5,75 +5,98 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { Card, SimpleGrid, Button, Text, Flex } from "@mantine/core";
 
 const Home = () => {
-    const [venues, setVenues] = useState([]); // State for storing venue data
-    const { token } = useAuth(); // Get token from the useAuth hook
+    const [venues, setVenues] = useState([]);
+    const [roleId, setRoleId] = useState(null);
+    const { token } = useAuth();
     const navigate = useNavigate();
-
-    // Message from ProtectedRoute redirection, if any
     const msg = useLocation()?.state?.msg || null;
 
-    // Fetch all venues with auth headers
-    const getVenues = async () => {
-
-        let url = `/api/venues`;
-        // if(role === 2){
-        //     url = `/api/venues/user`;
-        // }
-
+    // Fetch user role
+    const fetchUserRole = async () => {
         try {
-            const res = await axios.get(`https://hall-pass-main-ea0ukq.laravel.cloud${url}`, {
-                headers: {
-                    Authorization: `Bearer ${token}` // Adding auth header
-                }
+            const res = await axios.get(`https://hall-pass-main-ea0ukq.laravel.cloud/api/user`, {
+                headers: { Authorization: `Bearer ${token}` }
             });
-            setVenues(res.data.data);
-        
-        } catch (e) {
-            console.error("Error fetching Venues:", e);
+
+            if (res.data.roles.length > 0) {
+                setRoleId(res.data.roles[0].id);
+                console.log("Fetched Role ID:", res.data.roles[0].id);
+            }
+        } catch (err) {
+            console.error("Error fetching user role:", err);
         }
     };
 
+    // Fetch venues based on user role
+    const getVenues = async () => {
+        if (roleId === null) return; // Ensure role is set
 
+        let url = `/api/venues`; // Default for role 1
+        if (roleId === 2) {
+            url = `/api/userVenues`; // Fetch only user-specific venues
+        }
 
-    // Fetch venues on component mount
+        console.log(`Fetching venues from: https://hall-pass-main-ea0ukq.laravel.cloud${url}`);
+
+        try {
+            const res = await axios.get(`https://hall-pass-main-ea0ukq.laravel.cloud${url}`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            setVenues(res.data.data);
+        } catch (e) {
+            console.error("Error fetching venues:", e.response?.data || e);
+        }
+    };
+
     useEffect(() => {
-        getVenues();
+        if (token) {
+            fetchUserRole();
+        }
     }, [token]);
 
-    if (!venues.length) {
-        return <div>Loading...</div>;
-    }
+    useEffect(() => {
+        if (roleId !== null) {
+            getVenues();
+        }
+    }, [roleId]);
 
     return (
         <div>
             {msg && <Text mb={10} color="red">{msg}</Text>}
-            <Button mb={10} onClick={() => navigate('/venues/create')}>Add New Venue</Button>
-            <SimpleGrid cols={3}>
-                {venues.map((venue) => (
-                    <Card
-                        key={venue.id}
-                        shadow="sm"
-                        component={Flex}
-                        justify="space-between"
-                        direction="column"
-                    >
-                        <h2>{venue.description}</h2>
-                        <ul>
-                            <li>Address: {venue.address_line_one}, {venue.town}, {venue.county}</li>
-                            <li>Eircode: {venue.eircode}</li>
-                            <li>Contact: {venue.contact}</li>
-                        </ul>
-                        <Flex w="100%" justify="space-between">
-                            <button onClick={() => navigate(`/venues/${venue.id}`)}>View</button>
-                            {/* {(role === 2) ? (
-                                <>
-                                <button onClick={() => navigate(`/venues/edit/${venue.id}`)}>Edit</button>
-                           </>
-                            ) : ""} */}
-                        </Flex>
-                    </Card>
-                ))}
-            </SimpleGrid>
+
+            {/* Always show "Add New Venue" button for role 2, even if no venues */}
+            {roleId === 2 && (
+                <Button mb={10} onClick={() => navigate('/venues/create')}>
+                    Add New Venue
+                </Button>
+            )}
+
+            {/* Show message if no venues are available */}
+            {venues.length === 0 ? (
+                <Text>No venues available. {roleId === 2 ? "Create a new one!" : ""}</Text>
+            ) : (
+                <SimpleGrid cols={3}>
+                    {venues.map((venue) => (
+                        <Card
+                            key={venue.id}
+                            shadow="sm"
+                            component={Flex}
+                            justify="space-between"
+                            direction="column"
+                        >
+                            <h2>{venue.description}</h2>
+                            <ul>
+                                <li>Address: {venue.address_line_one}, {venue.town}, {venue.county}</li>
+                                <li>Eircode: {venue.eircode}</li>
+                                <li>Contact: {venue.contact}</li>
+                            </ul>
+                            <Flex w="100%" justify="space-between">
+                                <button onClick={() => navigate(`/venues/${venue.id}`)}>View</button>
+                            </Flex>
+                        </Card>
+                    ))}
+                </SimpleGrid>
+            )}
         </div>
     );
 };
