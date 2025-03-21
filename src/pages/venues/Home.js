@@ -33,11 +33,7 @@ const Home = () => {
         }
     };
 
-    // public function getUserVenues(){
 
-    //     $venues = Venues::where('user_id', '=', Auth::id());
-    //     return venues;
-    // }
 
     // Fetch venues on component mount
     useEffect(() => {

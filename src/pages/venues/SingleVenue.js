@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import axios from 'axios';
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../utils/useAuth";
-import { Loader, Alert, Text, Button } from "@mantine/core";
+import { Loader, Alert, Text, Button, Card, Group } from "@mantine/core";
 
 const SingleVenue = () => {
     const { token } = useAuth();
@@ -13,6 +13,7 @@ const SingleVenue = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [deleteError, setDeleteError] = useState(null);
+    const [hallDeleteError, setHallDeleteError] = useState(null);
 
     useEffect(() => {
         const fetchVenue = async () => {
@@ -20,6 +21,7 @@ const SingleVenue = () => {
                 const res = await axios.get(`https://hall-pass-main-ea0ukq.laravel.cloud/api/venues/${id}`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
+
                 setVenue(res.data.data);
                 setLoading(false);
             } catch (err) {
@@ -32,7 +34,7 @@ const SingleVenue = () => {
         fetchVenue();
     }, [id, token]);
 
-    const handleDelete = async () => {
+    const handleDeleteVenue = async () => {
         if (!window.confirm("Are you sure you want to delete this venue?")) return;
 
         try {
@@ -40,10 +42,29 @@ const SingleVenue = () => {
                 headers: { Authorization: `Bearer ${token}` },
             });
 
-            navigate("/venues"); // Redirect after deletion
+            navigate("/pages/venues"); // Redirect after deletion
         } catch (err) {
             console.error("Error deleting venue:", err);
             setDeleteError("Failed to delete venue.");
+        }
+    };
+
+    const handleDeleteHall = async (hallId) => {
+        if (!window.confirm("Are you sure you want to delete this hall?")) return;
+
+        try {
+            await axios.delete(`https://hall-pass-main-ea0ukq.laravel.cloud/api/halls/${hallId}`, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+
+            // Remove deleted hall from state
+            setVenue((prevVenue) => ({
+                ...prevVenue,
+                halls: prevVenue.halls.filter(hall => hall.id !== hallId)
+            }));
+        } catch (err) {
+            console.error("Error deleting hall:", err);
+            setHallDeleteError("Failed to delete hall.");
         }
     };
 
@@ -64,7 +85,7 @@ const SingleVenue = () => {
 
             {deleteError && <Alert color="red">{deleteError}</Alert>}
 
-            <Button color="red" mt={10} onClick={handleDelete}>
+            <Button color="red" mt={10} onClick={handleDeleteVenue}>
                 Delete Venue
             </Button>
 
@@ -74,11 +95,47 @@ const SingleVenue = () => {
                 </Button>
             </Link>
 
-            <Link to="/venues">
+            <Link to={`/halls/create/${id}`}>
+                <Button mt={10} variant="filled" ml={10} color="blue">
+                    Add a hall
+                </Button>
+            </Link>
+
+            <Link to="/pages/venues">
                 <Button mt={10} variant="outline" ml={10}>
                     Back to Venues
                 </Button>
             </Link>
+
+            {/* Display Halls */}
+            <Text size={20} mt={20} mb={10}>Halls in this Venue</Text>
+            {hallDeleteError && <Alert color="red">{hallDeleteError}</Alert>}
+
+            {venue.halls && venue.halls.length > 0 ? (
+                <div>
+                    {venue.halls.map((hall) => (
+                        <Card key={hall.id} shadow="sm" p="lg" mb={10}>
+                            <Group position="apart">
+                                <Text><strong>ID:</strong> {hall.id}</Text>
+                                <Text><strong>Capacity:</strong> {hall.capacity}</Text>
+                                <Text><strong>Price per Hour:</strong> €{hall.price_per_hour}</Text>
+                            </Group>
+                            <Group mt={10}>
+                                <Link to={`/halls/${hall.id}/edit?venue_id=${id}`}>
+                                    <Button variant="light" color="blue">
+                                        Edit Hall
+                                    </Button>
+                                </Link>
+                                <Button color="red" onClick={() => handleDeleteHall(hall.id)}>
+                                    Delete Hall
+                                </Button>
+                            </Group>
+                        </Card>
+                    ))}
+                </div>
+            ) : (
+                <Text color="gray">No halls available.</Text>
+            )}
         </div>
     );
 };

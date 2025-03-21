@@ -16,7 +16,8 @@ import CreateVenue from './pages/venues/Create';
 import EditVenue from './pages/venues/Edit';
 import HomeVenue from "./pages/venues/Home";
 
-
+import CreateHall from "./pages/halls/Create";
+import EditHall from "./pages/halls/Edit"
 
 export const UserContext = createContext();
 
@@ -47,6 +48,13 @@ const App = () => {
                                     <Route path='/pages/venues/' element={<HomeVenue />} />
                                      <Route path='/venues/:id/edit' element={<EditVenue />} /> 
                                      <Route path='/venues/:id' element={<SingleVenue />} /> 
+
+
+                                     <Route path='/halls/Create/:id' element={<CreateHall />} />
+                                     <Route path="/halls/:id/edit" element={<EditHall />} />
+
+
+
                                 </Route>
                         
 

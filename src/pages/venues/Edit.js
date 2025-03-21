@@ -55,7 +55,7 @@ const EditVenue = () => {
             headers: { Authorization: `Bearer ${token}` },
         })
             .then((res) => {
-                const user_id = res.data.data.id;
+                const user_id = res.data.id;
                 setUserId(user_id); // Store the user ID
                 form.setFieldValue("user_id", user_id); // Set user_id in form values
             })

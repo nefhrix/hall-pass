@@ -1,0 +1,115 @@
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { useAuth } from "../../utils/useAuth";
+import { TextInput, Button, NumberInput, MultiSelect, Text } from "@mantine/core";
+
+const EditHall = () => {
+    const { token } = useAuth();
+    const navigate = useNavigate();
+    const { id: hallId } = useParams(); // Only used for PATCH request
+    const [searchParams] = useSearchParams();
+    const venueId = Number(searchParams.get("venue_id")); // Venue ID from URL query params
+
+    const sportsOptions = [
+        { value: "1", label: "Sport 1" },
+        { value: "2", label: "Sport 2" },
+        { value: "3", label: "Sport 3" },
+        { value: "4", label: "Sport 4" },
+    ];
+
+    const [formValues, setFormValues] = useState({
+        venue_id: venueId || 0, // Show venue ID only in the form
+        capacity: 0,
+        price_per_hour: 0,
+        sports: [],
+    });
+
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        console.log("Extracted hallId:", hallId);
+        console.log("Extracted venueId:", venueId);
+    
+        if (!hallId || !venueId) {
+            console.error("Invalid hall or venue ID.");
+            return;
+        }
+    
+        axios
+            .get(`https://hall-pass-main-ea0ukq.laravel.cloud/api/halls/${hallId}`, {
+                headers: { Authorization: `Bearer ${token}` },
+            })
+            .then((res) => {
+                const { capacity, price_per_hour, sports } = res.data.data;
+                setFormValues({
+                    venue_id: venueId, // Ensure venue_id stays as venueId
+                    capacity: Number(capacity),
+                    price_per_hour: Number(price_per_hour),
+                    sports: sports.map((sport) => String(sport)), // Convert to string for MultiSelect
+                });
+                setLoading(false);
+            })
+            .catch((err) => {
+                console.error("Error fetching hall details:", err);
+                setLoading(false);
+            });
+    }, [hallId, venueId, token]);
+    
+
+    const handleChange = (field, value) => {
+        setFormValues((prev) => ({
+            ...prev,
+            [field]: field === "sports" ? value.map(Number) : Number(value) || 0, // Convert to number except sports
+        }));
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        try {
+            const res = await axios.patch(
+                `https://hall-pass-main-ea0ukq.laravel.cloud/api/halls/${hallId}`, // Only place where hallId is used
+                formValues,
+                { headers: { Authorization: `Bearer ${token}` } }
+            );
+
+            console.log("Success:", res.data);
+            navigate(`/venues/${venueId}`); // Redirect to venue page
+        } catch (err) {
+            console.error("Error:", err.response?.data || err.message);
+        }
+    };
+
+    if (loading) return <Text>Loading...</Text>;
+
+    return (
+        <div>
+            <Text size={24} mb={5}>Edit Hall</Text>
+            <form onSubmit={handleSubmit}>
+                <TextInput label="Venue ID" disabled value={formValues.venue_id} />
+                <NumberInput
+                    label="Capacity"
+                    withAsterisk
+                    value={formValues.capacity}
+                    onChange={(val) => handleChange("capacity", val)}
+                />
+                <NumberInput
+                    label="Price per Hour"
+                    withAsterisk
+                    value={formValues.price_per_hour}
+                    onChange={(val) => handleChange("price_per_hour", val)}
+                />
+                <MultiSelect
+                    label="Sports"
+                    data={sportsOptions}
+                    value={formValues.sports.map(String)} // Convert to string for MultiSelect
+                    onChange={(val) => handleChange("sports", val)}
+                />
+                <Button mt={10} type="submit">Save Changes</Button>
+            </form>
+        </div>
+    );
+};
+
+export default EditHall;
