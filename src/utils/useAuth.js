@@ -12,7 +12,17 @@ export const useAuth = () => {
 // AuthProvider Component
 export const AuthProvider = ({ children }) => {
     const [token, setToken] = useState(() => localStorage.getItem('token') || null);
-    const [user, setUser] = useState(() => JSON.parse(localStorage.getItem('user')) || null);
+    const [user, setUser] = useState(() => {
+        const storedUser = localStorage.getItem('user');
+        
+        try {
+            return storedUser ? JSON.parse(storedUser) : null;
+        } catch (error) {
+            console.error("Error parsing user data from localStorage:", error);
+            return null;
+        }
+    });
+    
 
     // Fetch user details when token is available
     useEffect(() => {

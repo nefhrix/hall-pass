@@ -35,8 +35,7 @@ const App = () => {
             <AuthProvider>
             <MantineProvider withGlobalStyles withNormalizeCSS>
                     <Router>
-                        {/* Creates a menu on the left and our content on the right */}
-                        {/* We can pass in our own components for the navbar, header and footer */}                                            
+                                                         
                         <AppShell
                             padding="md"
                             navbar={<Navbar />}
@@ -51,7 +50,7 @@ const App = () => {
                                     <Route path='/venues/Create' element={<CreateVenue />} />
                                     <Route path='/pages/venues/' element={<HomeVenue />} />
                                     <Route path='/userVenues' element={<HomeVenue />} />
-                                     <Route path='/venues/:id/edit' element={<EditVenue />} /> 
+                                    <Route path='/venues/:id/edit' element={<EditVenue />} /> 
                                      <Route path='/venues/:id' element={<SingleVenue />} /> 
 
 
