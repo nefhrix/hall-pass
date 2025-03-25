@@ -39,7 +39,7 @@ const App = () => {
                         <AppShell
                             padding="md"
                             navbar={<Navbar />}
-                            header={<Header height={60} p="xs">Clinic Manager</Header>}
+                            header={<Header height={60} p="xs">Hall Pass</Header>}
                             footer={<Footer height={60} p="xs"></Footer>}
                         >
                             <Routes>

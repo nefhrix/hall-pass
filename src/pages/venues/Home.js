@@ -2,10 +2,12 @@ import { useEffect, useState } from "react";
 import axios from 'axios';
 import { useAuth } from "../../utils/useAuth";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Card, SimpleGrid, Button, Text, Flex } from "@mantine/core";
+import { Card, SimpleGrid, Button, Text, Flex, TextInput } from "@mantine/core";
 
 const Home = () => {
-    const [venues, setVenues] = useState([]);
+    const [venues, setVenues] = useState([]);  // All venues from API
+    const [filteredVenues, setFilteredVenues] = useState([]); // Venues after filtering
+    const [searchQuery, setSearchQuery] = useState("");  // Search input state
     const [roleId, setRoleId] = useState(null);
     const { token } = useAuth();
     const navigate = useNavigate();
@@ -43,8 +45,24 @@ const Home = () => {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setVenues(res.data.data);
+            setFilteredVenues(res.data.data); // Initially show all venues
         } catch (e) {
             console.error("Error fetching venues:", e.response?.data || e);
+        }
+    };
+
+    // Filter venues based on search input
+    const handleSearch = (query) => {
+        setSearchQuery(query);
+
+        if (!query) {
+            setFilteredVenues(venues); // Show all venues if input is empty
+        } else {
+            const lowerCaseQuery = query.toLowerCase();
+            const filtered = venues.filter(venue =>
+                venue.description.toLowerCase().includes(lowerCaseQuery)
+            );
+            setFilteredVenues(filtered);
         }
     };
 
@@ -71,12 +89,20 @@ const Home = () => {
                 </Button>
             )}
 
+            {/* Search Bar for Filtering Venues */}
+            <TextInput
+                placeholder="Search venues..."
+                value={searchQuery}
+                onChange={(e) => handleSearch(e.target.value)}
+                mb={10}
+            />
+
             {/* Show message if no venues are available */}
-            {venues.length === 0 ? (
-                <Text>No venues available. {roleId === 2 ? "Create a new one!" : ""}</Text>
+            {filteredVenues.length === 0 ? (
+                <Text>No venues found. {roleId === 2 ? "Create a new one!" : ""}</Text>
             ) : (
                 <SimpleGrid cols={3}>
-                    {venues.map((venue) => (
+                    {filteredVenues.map((venue) => (
                         <Card
                             key={venue.id}
                             shadow="sm"
@@ -91,7 +117,7 @@ const Home = () => {
                                 <li>Contact: {venue.contact}</li>
                             </ul>
                             <Flex w="100%" justify="space-between">
-                                <button onClick={() => navigate(`/venues/${venue.id}`)}>View</button>
+                                <button onClick={() => navigate(`/venues/${venue.id}`)}>View Venue</button>
                             </Flex>
                         </Card>
                     ))}
