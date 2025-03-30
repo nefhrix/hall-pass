@@ -4,6 +4,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useAuth } from "../../utils/useAuth";
 import { useForm } from '@mantine/form';
 import { TextInput, Button, Text, Loader, Alert } from "@mantine/core";
+import { showNotification } from '@mantine/notifications';
 
 const EditVenue = () => {
     const { token } = useAuth(); 
@@ -70,11 +71,40 @@ const EditVenue = () => {
         })
             .then((res) => {
                 console.log('Venue updated:', res.data);
+
+                // Success Notification
+                showNotification({
+                    title: 'Success',
+                    message: 'Venue updated successfully!',
+                    color: 'green',
+                    autoClose: 3000,
+                    radius: 'md',
+                    sx: {
+                        fontSize: '18px',
+                        padding: '20px',
+                        fontWeight: 'bold',
+                    },
+                });
+
                 navigate(`/venues/${id}`);
             })
             .catch((err) => {
                 console.error('Error updating venue:', err);
                 setError('Failed to update venue');
+
+                // Error Notification
+                showNotification({
+                    title: 'Error',
+                    message: 'Failed to update venue. Please try again.',
+                    color: 'red',
+                    autoClose: 5000,
+                    radius: 'md',
+                    sx: {
+                        fontSize: '18px',
+                        padding: '20px',
+                        fontWeight: 'bold',
+                    },
+                });
             });
     };
 

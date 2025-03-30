@@ -3,10 +3,12 @@ import axios from "axios";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../utils/useAuth";
 import { Loader, Alert, Text, Button, Card, Group, Badge } from "@mantine/core";
+import FullCalendar from "@fullcalendar/react";
+import dayGridPlugin from "@fullcalendar/daygrid";
 
 const SingleHall = () => {
     const { token } = useAuth();
-    const { hallId } = useParams();  
+    const { hallId } = useParams();
     const navigate = useNavigate();
 
     const [hall, setHall] = useState(null);
@@ -20,10 +22,8 @@ const SingleHall = () => {
             const res = await axios.get(`https://hall-pass-main-ea0ukq.laravel.cloud/api/user`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
-
             if (res.data.roles.length > 0) {
                 setRoleId(res.data.roles[0].id);
-                console.log("Fetched Role ID:", res.data.roles[0].id);
             }
         } catch (err) {
             console.error("Error fetching user role:", err);
@@ -37,7 +37,6 @@ const SingleHall = () => {
                 `https://hall-pass-main-ea0ukq.laravel.cloud/api/halls/${hallId}`,
                 { headers: { Authorization: `Bearer ${token}` } }
             );
-
             setHall(res.data.data);
             setLoading(false);
         } catch (err) {
@@ -48,23 +47,32 @@ const SingleHall = () => {
     };
 
     useEffect(() => {
-        fetchHall(); 
+        fetchHall();
         fetchUserRole();
     }, [hallId, token]);
 
     if (loading) return <Loader size="lg" />;
     if (error) return <Alert color="red">{error}</Alert>;
 
+    // Convert timeslot data to FullCalendar format
+    const events = hall.timeslots.map(slot => ({
+        title: slot.status,
+        start: `${slot.date}T${slot.start_time}`, //making sure this is a correct datetime format. whatever iso8601 is lol
+        end: `${slot.date}T${slot.end_time}`,
+        backgroundColor: slot.status === "Available" ? "green" : "red",
+        url: slot.status === "Available" ? `/venues/${hall.venue_id}/timeslots/${slot.id}/book` : "#"
+    }));
+
     return (
-        <div>
+        <div style={{ height: "100vh", padding: "20px" }}>
             <Text size={24} mb={5}>Hall Details</Text>
-            <Card shadow="sm" p="lg">
+            <Card shadow="sm" p="lg" mb={20}>
                 <ul>
                     <li><strong>Capacity:</strong> {hall.capacity} people</li>
                     <li><strong>Price per Hour:</strong> €{hall.price_per_hour}</li>
                     <li><strong>Sports Available:</strong></li>
                     <Group>
-                        {hall.sports && hall.sports.length > 0 ? (
+                        {hall.sports.length > 0 ? (
                             hall.sports.map((sport, index) => (
                                 <Badge key={index} color="blue">{sport.sport}</Badge>
                             ))
@@ -74,38 +82,12 @@ const SingleHall = () => {
                     </Group>
                 </ul>
 
-                <Text size={20} mt={20} mb={10}>Time Slots</Text>
-                {hall.timeslots.length > 0 ? (
-                    <div>
-                        {hall.timeslots.map((slot) => (
-                            <Card 
-                                key={slot.id} 
-                                shadow="sm" 
-                                p="lg" 
-                                mb={10} 
-                                style={{ cursor: slot.status === "Available" ? "pointer" : "default", opacity: slot.status === "Booked" ? 0.5 : 1 }}
-                                onClick={() => slot.status === "Available" && navigate(`/venues/${hall.venue_id}/timeslots/${slot.id}/book`)}
-                            >
-                                <Text><strong>Timeslot ID:</strong> {slot.id}</Text>
-                                <Text><strong>Date:</strong> {slot.date}</Text>
-                                <Text><strong>Start Time:</strong> {slot.start_time}</Text>
-                                <Text><strong>End Time:</strong> {slot.end_time}</Text>
-                                <Badge size="xl" color={slot.status === "Available" ? "green" : "red"}>
-                                    {slot.status}
-                                </Badge>
-                            </Card>
-                        ))}
-                    </div>
-                ) : (
-                    <Text color="gray">No time slots available.</Text>
-                )}
 
-                {/* Show Create Time Slot button only if roleId is NOT 1 */}
                 {roleId !== 1 && (
-                    <Button 
-                        mt={10} 
-                        variant="filled" 
-                        color="blue" 
+                    <Button
+                        mt={10}
+                        variant="filled"
+                        color="blue"
                         onClick={() => navigate(`/venues/${hall.id}/timeslots/Create`)}
                     >
                         Create Time Slot
@@ -116,6 +98,44 @@ const SingleHall = () => {
                     <Button mt={10} variant="outline">Back to Venue</Button>
                 </Link>
             </Card>
+
+
+            <FullCalendar
+    plugins={[dayGridPlugin]}
+    initialView="dayGridMonth"
+    events={events}
+    height="auto"
+    eventDisplay="block"
+    headerToolbar={{
+        left: "prevYear,prev,next,nextYear today",
+        center: "title",
+        right: "dayGridMonth,dayGridWeek,dayGridDay",
+    }}
+    eventContent={({ event }) => (
+        <div style={{
+            padding: "5px",
+            fontSize: "0.9rem",
+            textAlign: "center",
+            color: "white",
+            borderRadius: "5px",
+            width: "100%",
+            display: "block",
+            backgroundColor: event.backgroundColor, // Ensure it applies the event color
+        }}>
+            <strong>{event.startStr.slice(11, 16)} - {event.endStr.slice(11, 16)}</strong>
+            <div>{event.title}</div>
+        </div>
+    )}
+    eventClick={(info) => {
+        if (info.event.url !== "#") {
+            info.jsEvent.preventDefault();
+            navigate(info.event.url);
+        }
+    }}
+/>
+
+
+
         </div>
     );
 };

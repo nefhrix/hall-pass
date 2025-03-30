@@ -4,6 +4,11 @@ import { createContext } from "react";
 import { MantineProvider, AppShell, Header, Footer } from '@mantine/core';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
+import { Notifications } from '@mantine/notifications';
+
+
+
+
 import Navbar from './components/Navbar';
 import LoginForm from "./components/LoginForm";
 import RegisterForm from "./components/RegisterForm";
@@ -35,7 +40,7 @@ const App = () => {
             <AuthProvider>
             <MantineProvider withGlobalStyles withNormalizeCSS>
                     <Router>
-                                                         
+                    <Notifications position="top-center" />                              
                         <AppShell
                             padding="md"
                             navbar={<Navbar />}

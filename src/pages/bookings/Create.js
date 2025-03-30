@@ -43,8 +43,14 @@ const BookingForm = () => {
                 setHallPrice(hallRes.data.data.price_per_hour);
 
                 // Calculate price based on hours booked
-                const startTime = new Date(`1970-01-01T${timeslotRes.data.data.start_time}`);
-                const endTime = new Date(`1970-01-01T${timeslotRes.data.data.end_time}`);
+                let startTime = new Date(`1970-01-01T${timeslotRes.data.data.start_time}`);
+                let endTime = new Date(`1970-01-01T${timeslotRes.data.data.end_time}`);
+
+                // If start time is later than end time, add one day to end time
+                if (startTime > endTime) {
+                    endTime.setDate(endTime.getDate() + 1);
+                }
+
                 const hours = (endTime - startTime) / (1000 * 60 * 60); // Convert ms to hours
 
                 form.setValues({
@@ -63,41 +69,36 @@ const BookingForm = () => {
         fetchData();
     }, [timeslotId, token]);
 
-   //hanndle booking
-   const handleSubmit = async () => {
-    try {
-        
-        await axios.post("https://hall-pass-main-ea0ukq.laravel.cloud/api/bookings", form.values, {
-            headers: { Authorization: `Bearer ${token}` },
-        });
+    // Handle booking
+    const handleSubmit = async () => {
+        try {
+            await axios.post("https://hall-pass-main-ea0ukq.laravel.cloud/api/bookings", form.values, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
 
-      
-        await axios.patch(
-            `https://hall-pass-main-ea0ukq.laravel.cloud/api/timeslots/${timeslotId}`,
-            {
-                hall_id: timeslot.hall_id, // Include hall_id
-                date: timeslot.date,       // Include date
-                start_time: timeslot.start_time, // Include start time
-                end_time: timeslot.end_time,     // Include end time
-                status: "Booked",          // Update status
-            },
-            {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    "Content-Type": "application/json",
+            await axios.patch(
+                `https://hall-pass-main-ea0ukq.laravel.cloud/api/timeslots/${timeslotId}`,
+                {
+                    hall_id: timeslot.hall_id, // Include hall_id
+                    date: timeslot.date,       // Include date
+                    start_time: timeslot.start_time, // Include start time
+                    end_time: timeslot.end_time,     // Include end time
+                    status: "Booked",          // Update status
                 },
-            }
-        );
-        
-      navigate(`/halls/${timeslot?.hall_id}`);
-    } catch (err) {
-        console.error("Error processing booking:", err);
-        setError("Failed to create booking. Please try again.");
-    }
-};
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        "Content-Type": "application/json",
+                    },
+                }
+            );
 
-
-    
+            navigate(`/halls/${timeslot?.hall_id}`);
+        } catch (err) {
+            console.error("Error processing booking:", err);
+            setError("Failed to create booking. Please try again.");
+        }
+    };
 
     if (loading) return <Text>Loading...</Text>;
     if (error) return <Alert color="red" mb={10}>{error}</Alert>;
@@ -105,16 +106,10 @@ const BookingForm = () => {
     return (
         <div>
             <Text size={24} mb={5}>Create Booking</Text>
-
             <Text><strong>Time Slot:</strong> {timeslot?.start_time} - {timeslot?.end_time}</Text>
             <Text><strong>Price Per Hour:</strong> €{hallPrice}</Text>
-
             <form onSubmit={form.onSubmit(handleSubmit)}>
-                <TextInput
-                    label="Price (€)"
-                    value={form.values.price_of_booking}
-                    disabled
-                />
+                <TextInput label="Price (€)" value={form.values.price_of_booking} disabled />
                 <Button mt={10} type="submit">Confirm Booking</Button>
             </form>
         </div>

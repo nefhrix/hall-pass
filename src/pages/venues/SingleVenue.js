@@ -44,6 +44,7 @@ const SingleVenue = () => {
                 });
 
                 setVenue(res.data.data);
+            
                 setLoading(false);
             } catch (err) {
                 console.error("Error fetching venue details:", err);
@@ -141,7 +142,7 @@ const SingleVenue = () => {
                     {venue.halls.map((hall) => (
                         <Card key={hall.id} shadow="sm" p="lg" mb={10}>
                             <Group position="apart">
-                                <Text><strong>ID:</strong> {hall.id}</Text>
+                               
                                 <Text><strong>Capacity:</strong> {hall.capacity}</Text>
                                 <Text><strong>Price per Hour:</strong> €{hall.price_per_hour}</Text>
                             </Group>

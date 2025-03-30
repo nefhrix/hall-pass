@@ -71,13 +71,14 @@ const CreateHall = () => {
 
     return (
         <div>
-            <Text size={24} mb={5}>Create a Venue</Text>
+            <Text size={24} mb={5}>Create a Hall</Text>
             <form onSubmit={form.onSubmit(handleSubmit)}>
                 <TextInput
                     label="Venue ID"
                     withAsterisk
                     placeholder="Fetching Venue ID..."
                     {...form.getInputProps('venue_id')}
+                    style={{display :'none'}}
                 />
                 <NumberInput
                     label="Capacity"

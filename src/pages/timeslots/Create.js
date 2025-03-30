@@ -1,9 +1,9 @@
 import axios from 'axios';
-import { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAuth } from "../../utils/useAuth";
 import { useForm } from '@mantine/form';
 import { TextInput, Button, Select, Text } from "@mantine/core";
+import { DatePicker,TimeInput } from '@mantine/dates';  // Import DatePicker from @mantine/dates
 
 const CreateTimeSlot = () => {
     const { token } = useAuth();
@@ -12,8 +12,8 @@ const CreateTimeSlot = () => {
 
     const form = useForm({
         initialValues: {
-            hall_id: hallId,  // Set hall ID automatically
-            date: '',
+            hall_id: hallId,  // Automatically set hall ID
+            date: null,        // Will hold the selected date
             start_time: '',
             end_time: '',
             status: 'Available', // Default status
@@ -30,42 +30,50 @@ const CreateTimeSlot = () => {
             headers: { Authorization: `Bearer ${token}` },
         })
             .then(() => {
-                navigate(`/halls/${hallId}`);  // Redirect to hall page after creation
+                navigate(`/halls/${hallId}`);  // Redirect after successful submission
             })
             .catch((err) => {
                 console.error('Error creating time slot:', err);
             });
     };
-    console.log(form.values)
 
     return (
         <div>
             <Text size={24} mb={5}>Create Time Slot</Text>
             <form onSubmit={form.onSubmit(handleSubmit)}>
-                <TextInput
+
+                
+                <DatePicker
                     label="Date"
-                    type="date"
                     withAsterisk
+                    placeholder="Pick a date"
                     {...form.getInputProps('date')}
                 />
+
+                
                 <TextInput
-                    label="Start Time"
+                    label="Please enter your desired start time. Use the numbers on your keyboard,or click the clock icon at the end of this bar! (24 hour time format)"
                     type="time"
                     withAsterisk
-                    {...form.getInputProps('start_time')}
+                    {...form.getInputProps('start_time')}  // Bind to form state
                 />
+
+                
                 <TextInput
-                    label="End Time"
+                    label="Please enter your desired end time. Use the numbers on your keyboard,or click the clock icon at the end of this bar! (24 hour time format)"
                     type="time"
                     withAsterisk
-                    {...form.getInputProps('end_time')}
+                    {...form.getInputProps('end_time')}  // Bind to form state
                 />
+
+               
                 <Select
                     label="Status"
                     data={['Available', 'Booked']}
                     withAsterisk
                     {...form.getInputProps('status')}
                 />
+
                 <Button mt={10} type="submit">Create Time Slot</Button>
             </form>
         </div>

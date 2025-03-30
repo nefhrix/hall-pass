@@ -4,19 +4,20 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from "../../utils/useAuth";
 import { useForm } from '@mantine/form';
 import { TextInput, Button, Text } from "@mantine/core";
+import { showNotification } from '@mantine/notifications';
 
 const CreateVenue = () => {
-    const { token } = useAuth(); // Get token for authentication
+    const { token } = useAuth();
     const navigate = useNavigate();
-    const [userId, setUserId] = useState(null); // Store user ID from API
+    const [userId, setUserId] = useState(null);
 
     useEffect(() => {
         axios.get('https://hall-pass-main-ea0ukq.laravel.cloud/api/user', {
             headers: { Authorization: `Bearer ${token}` },
         })
         .then((res) => {
-            console.log("User API Response:", res.data); // Log full user data
-            setUserId(res.data.id); // Ensure we correctly fetch the user ID
+            console.log("User API Response:", res.data);
+            setUserId(res.data.id);
         })
         .catch((err) => {
             console.error('Error fetching user ID:', err.response?.data || err);
@@ -62,8 +63,21 @@ const CreateVenue = () => {
             
             console.log("Venue Created:", res.data);
 
-            // Navigate to the user's venues page
-            navigate('/userVenues', { state: { msg: 'Venue created successfully!' } });
+            // Show green success notification
+            showNotification({
+                title: 'Success',
+                message: 'Venue created successfully!',
+                color: 'green',  // Green success message
+                autoClose: 3000, // Closes after 3 seconds
+                radius: 'md',    // Medium border-radius
+                sx: {
+                    fontSize: '18px', // Bigger text
+                    padding: '20px',  // More spacing
+                    fontWeight: 'bold' // Make text stand out
+        }});
+
+            // Navigate to user's venues page
+            navigate('/userVenues');
         } catch (err) {
             console.error("Error creating venue:", err.response?.data || err);
         }
