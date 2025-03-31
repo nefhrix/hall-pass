@@ -14,23 +14,8 @@ const SingleHall = () => {
     const [hall, setHall] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [roleId, setRoleId] = useState(null);
+    const [calendarRef, setCalendarRef] = useState(null);
 
-    // Function to fetch user role
-    const fetchUserRole = async () => {
-        try {
-            const res = await axios.get(`https://hall-pass-main-ea0ukq.laravel.cloud/api/user`, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
-            if (res.data.roles.length > 0) {
-                setRoleId(res.data.roles[0].id);
-            }
-        } catch (err) {
-            console.error("Error fetching user role:", err);
-        }
-    };
-
-    // Function to fetch hall and timeslot data
     const fetchHall = async () => {
         try {
             const res = await axios.get(
@@ -48,7 +33,6 @@ const SingleHall = () => {
 
     useEffect(() => {
         fetchHall();
-        fetchUserRole();
     }, [hallId, token]);
 
     if (loading) return <Loader size="lg" />;
@@ -57,11 +41,42 @@ const SingleHall = () => {
     // Convert timeslot data to FullCalendar format
     const events = hall.timeslots.map(slot => ({
         title: slot.status,
-        start: `${slot.date}T${slot.start_time}`, //making sure this is a correct datetime format. whatever iso8601 is lol
+        start: `${slot.date}T${slot.start_time}`,
         end: `${slot.date}T${slot.end_time}`,
         backgroundColor: slot.status === "Available" ? "green" : "red",
         url: slot.status === "Available" ? `/venues/${hall.venue_id}/timeslots/${slot.id}/book` : "#"
     }));
+
+    
+    const nextAvailableSlot = hall.timeslots
+        .filter(slot => slot.status === "Available") //Filter by avaliable status timeslots
+        .sort((a, b) => new Date(a.date) - new Date(b.date))[0]; //Converted to date objects for comparison czu its easier. a - b makes sure the earliest date comes first
+
+    
+    // const jumpToNextAvailable = () => {
+    //     if (nextAvailableSlot && calendarRef) {
+    //         calendarRef.getApi().gotoDate(nextAvailableSlot.date); //calendar ref api makes sure i can use the fullcalendar api methods. gotoDate is a method which changes the calendar view to the date of nextAvaliableTimeslot
+    //     }
+    // };
+
+    const jumpToNextAvailable = () => {
+        if (!calendarRef || !hall.timeslots.length) return;
+    
+        const calendarApi = calendarRef.getApi();
+        const currentDate = calendarApi.getDate(); // Get the current view date
+    
+        // Find next available slot after the current date
+        const futureSlots = hall.timeslots
+            .filter(slot => slot.status === "Available" && new Date(slot.date) > currentDate) //same code as the next avaliable slot except im checking to see if the next slots date is in the  future (i.e NOT this current slot that its already jumped to)
+            .sort((a, b) => new Date(a.date) - new Date(b.date));
+    
+        if (futureSlots.length > 0) {
+            calendarApi.gotoDate(futureSlots[0].date); // Jump to the next available slot
+        } else {
+            alert("No more available slots."); 
+        }
+    };
+    
 
     return (
         <div style={{ height: "100vh", padding: "20px" }}>
@@ -81,61 +96,55 @@ const SingleHall = () => {
                         )}
                     </Group>
                 </ul>
-
-
-                {roleId !== 1 && (
-                    <Button
-                        mt={10}
-                        variant="filled"
-                        color="blue"
-                        onClick={() => navigate(`/venues/${hall.id}/timeslots/Create`)}
-                    >
-                        Create Time Slot
-                    </Button>
-                )}
-
                 <Link to={`/venues/${hall.venue_id}`}>
                     <Button mt={10} variant="outline">Back to Venue</Button>
                 </Link>
             </Card>
 
+            {/* Button to Jump to Next Available Time Slot */}
+            <Button 
+                mb={10} 
+                color="blue" 
+                onClick={jumpToNextAvailable}
+                disabled={!nextAvailableSlot}
+            >
+                {nextAvailableSlot ? "Jump to Next Available Slot" : "No Available Slots"}
+            </Button>
 
             <FullCalendar
-    plugins={[dayGridPlugin]}
-    initialView="dayGridMonth"
-    events={events}
-    height="auto"
-    eventDisplay="block"
-    headerToolbar={{
-        left: "prevYear,prev,next,nextYear today",
-        center: "title",
-        right: "dayGridMonth,dayGridWeek,dayGridDay",
-    }}
-    eventContent={({ event }) => (
-        <div style={{
-            padding: "5px",
-            fontSize: "0.9rem",
-            textAlign: "center",
-            color: "white",
-            borderRadius: "5px",
-            width: "100%",
-            display: "block",
-            backgroundColor: event.backgroundColor, // Ensure it applies the event color
-        }}>
-            <strong>{event.startStr.slice(11, 16)} - {event.endStr.slice(11, 16)}</strong>
-            <div>{event.title}</div>
-        </div>
-    )}
-    eventClick={(info) => {
-        if (info.event.url !== "#") {
-            info.jsEvent.preventDefault();
-            navigate(info.event.url);
-        }
-    }}
-/>
-
-
-
+                ref={setCalendarRef}
+                plugins={[dayGridPlugin]}
+                initialView="dayGridMonth"
+                events={events}
+                height="auto"
+                eventDisplay="block"
+                headerToolbar={{
+                    left: "prevYear,prev,next,nextYear today",
+                    center: "title",
+                    right: "dayGridMonth,dayGridWeek,dayGridDay",
+                }}
+                eventContent={({ event }) => (
+                    <div style={{
+                        padding: "5px",
+                        fontSize: "0.9rem",
+                        textAlign: "center",
+                        color: "white",
+                        borderRadius: "5px",
+                        width: "100%",
+                        display: "block",
+                        backgroundColor: event.backgroundColor,
+                    }}>
+                        <strong>{event.startStr.slice(11, 16)} - {event.endStr.slice(11, 16)}</strong>
+                        <div>{event.title}</div>
+                    </div>
+                )}
+                eventClick={(info) => {
+                    if (info.event.url !== "#") {
+                        info.jsEvent.preventDefault();
+                        navigate(info.event.url);
+                    }
+                }}
+            />
         </div>
     );
 };

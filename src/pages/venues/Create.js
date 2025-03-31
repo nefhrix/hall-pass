@@ -23,7 +23,7 @@ const CreateVenue = () => {
             console.error('Error fetching user ID:', err.response?.data || err);
         });
     }, [token]);
-
+    console.log(token)
     const form = useForm({
         initialValues: {
             address_line_one: '',

@@ -8,8 +8,8 @@ import { TextInput, Button, NumberInput, MultiSelect, Text } from "@mantine/core
 const CreateHall = () => {
     const { token } = useAuth();
     const navigate = useNavigate();
-    const { id } = useParams();
-    
+    const { id } = useParams(); // Venue ID from URL
+
     const sportsOptions = [
         { value: 1, label: "Football" },
         { value: 2, label: "Basketball" },
@@ -19,54 +19,59 @@ const CreateHall = () => {
 
     const [venueId, setVenueId] = useState(null);
 
-    useEffect(() => {
-        if (!id) {
-            console.error('No valid venue ID provided.');
-            return;
-        }
-        
-        axios.get(`https://hall-pass-main-ea0ukq.laravel.cloud/api/venues/${id}`, {
-            headers: { Authorization: `Bearer ${token}` },
-        })
-            .then((res) => {
-                setVenueId(res.data.data.id);
-                form.setFieldValue('venue_id', res.data.data.id);
-            })
-            .catch((err) => {
-                console.error('Error fetching venue details:', err);
-            });
-    }, [id, token]);
-
     const form = useForm({
         initialValues: {
             venue_id: '',
+            name: '',  // Updated from hall_name
             capacity: 0,
             price_per_hour: 0,
             sports: [],
         },
         validate: {
             venue_id: (value) => (value ? null : 'Venue ID is required'),
+            name: (value) => (value.trim() ? null : 'Hall name is required'),
             capacity: (value) => (value > 0 ? null : 'Capacity must be greater than 0'),
             price_per_hour: (value) => (value >= 0 ? null : 'Price must be 0 or more'),
         },
     });
 
+    useEffect(() => {
+        if (!id) {
+            console.error('No valid venue ID provided.');
+            return;
+        }
+
+        axios.get(`https://hall-pass-main-ea0ukq.laravel.cloud/api/venues/${id}`, {
+            headers: { Authorization: `Bearer ${token}` },
+        })
+        .then((res) => {
+            const venueID = Number(res.data.data.id); // Convert to number
+            setVenueId(venueID);
+            form.setFieldValue('venue_id', venueID);
+        })
+        .catch((err) => {
+            console.error('Error fetching venue details:', err);
+        });
+    }, [id, token]);
+
     const handleSubmit = () => {
-        // Convert selected sports from strings to integers
         const formattedValues = {
-            ...form.values,
-            sports: form.values.sports.map(Number),
+            venue_id: Number(form.values.venue_id), // Ensure it's a number
+            name: form.values.name.trim(), // Ensure valid hall name
+            capacity: Number(form.values.capacity),
+            price_per_hour: Number(form.values.price_per_hour),
+            sports: form.values.sports.map(Number), // Convert sports to numbers
         };
 
         axios.post('https://hall-pass-main-ea0ukq.laravel.cloud/api/halls', formattedValues, {
             headers: { Authorization: `Bearer ${token}` },
         })
-            .then((res) => {
-                navigate(`/venues/${id}`);
-            })
-            .catch((err) => {
-                console.error(err);
-            });
+        .then(() => {
+            navigate(`/venues/${id}`);
+        })
+        .catch((err) => {
+            console.error('API Error:', err.response?.data || err.message);
+        });
     };
 
     return (
@@ -74,11 +79,17 @@ const CreateHall = () => {
             <Text size={24} mb={5}>Create a Hall</Text>
             <form onSubmit={form.onSubmit(handleSubmit)}>
                 <TextInput
+                    label="Hall Name"
+                    withAsterisk
+                    placeholder="Enter hall name"
+                    {...form.getInputProps('name')}
+                />
+                <TextInput
                     label="Venue ID"
                     withAsterisk
                     placeholder="Fetching Venue ID..."
                     {...form.getInputProps('venue_id')}
-                    style={{display :'none'}}
+                    style={{ display: 'none' }}
                 />
                 <NumberInput
                     label="Capacity"

@@ -142,8 +142,9 @@ const SingleVenue = () => {
                     {venue.halls.map((hall) => (
                         <Card key={hall.id} shadow="sm" p="lg" mb={10}>
                             <Group position="apart">
-                               
-                                <Text><strong>Capacity:</strong> {hall.capacity}</Text>
+                            <Text><strong>Capacity:</strong> {hall.capacity}</Text>
+                                <Text><strong>Hall Name:</strong> {hall.name}</Text>
+                                
                                 <Text><strong>Price per Hour:</strong> €{hall.price_per_hour}</Text>
                             </Group>
                             <Group mt={10}>
