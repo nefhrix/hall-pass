@@ -44,7 +44,7 @@ const SingleVenue = () => {
                 });
 
                 setVenue(res.data.data);
-            
+                console.log(res.data.data)
                 setLoading(false);
             } catch (err) {
                 console.error("Error fetching venue details:", err);
@@ -103,8 +103,9 @@ const SingleVenue = () => {
                 <li><strong>Eircode:</strong> {venue.eircode}</li>
                 <li><strong>Description:</strong> {venue.description}</li>
                 <li><strong>Contact:</strong> {venue.contact}</li>
+                <li>{venue.image}</li> 
             </ul>
-
+                
             {deleteError && <Alert color="red">{deleteError}</Alert>}
 
             {roleId === 2 && (

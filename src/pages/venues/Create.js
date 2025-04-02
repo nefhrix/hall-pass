@@ -12,7 +12,8 @@ const CreateVenue = () => {
     const { token } = useAuth();
     const navigate = useNavigate();
     const [userId, setUserId] = useState(null);
-    const [image, setImage] = useState(null);
+    const [hallImage, setHallImage] = useState(null);
+    const [venueimage, setVenueImage] = useState(null);
     const [halls, setHalls] = useState([]);
 
     const sportsOptions = [
@@ -26,8 +27,8 @@ const CreateVenue = () => {
         axios.get('https://hall-pass-main-ea0ukq.laravel.cloud/api/user', {
             headers: { Authorization: `Bearer ${token}` },
         })
-        .then((res) => setUserId(res.data.id))
-        .catch((err) => console.error('Error fetching user ID:', err.response?.data || err));
+            .then((res) => setUserId(res.data.id))
+            .catch((err) => console.error('Error fetching user ID:', err.response?.data || err));
     }, [token]);
 
     const form = useForm({
@@ -38,11 +39,12 @@ const CreateVenue = () => {
             eircode: '',
             description: '',
             contact: '',
+            halls : [{}],
         },
     });
 
     const addHall = () => {
-        setHalls([...halls, { name: '', capacity: 0, price_per_hour: 0, sports: [], image: null }]);
+        setHalls([...halls, { name: '', capacity: 0, price_per_hour: 0, sports: [], hallImage: null }]);
     };
 
     const updateHall = (index, field, value) => {
@@ -55,16 +57,18 @@ const CreateVenue = () => {
     };
 
     const handleSubmit = async () => {
+       
         if (!userId) return;
-
+    
         const formData = new FormData();
         formData.append('user_id', userId);
         Object.entries(form.values).forEach(([key, value]) => formData.append(key, value));
-
-        if (image) {
-            formData.append('image', image);
+    
+        // Append the venue image if it exists
+        if (venueimage) {
+            formData.append('venueImage', venueimage);
         }
-
+    
         halls.forEach((hall, index) => {
             formData.append(`halls[${index}][name]`, hall.name);
             formData.append(`halls[${index}][capacity]`, hall.capacity);
@@ -72,21 +76,27 @@ const CreateVenue = () => {
             hall.sports.forEach((sport, sportIndex) => {
                 formData.append(`halls[${index}][sports][${sportIndex}]`, sport);
             });
-            if (hall.image) {
-                formData.append(`halls[${index}][image]`, hall.image);
+            if (hall.hallImage) {
+                formData.append(`halls[${index}][hallImage]`, hall.hallImage);
             }
         });
-
+        for (let [key, value] of formData.entries()) {
+            console.log(`${key}:`, value);
+        }
+        
         try {
             await axios.post('https://hall-pass-main-ea0ukq.laravel.cloud/api/venues', formData, {
                 headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data' },
             });
+    
             showNotification({ title: 'Success', message: 'Venue created successfully!', color: 'green' });
             navigate('/userVenues');
         } catch (err) {
             console.error("Error creating venue:", err.response?.data || err);
         }
     };
+    
+    
 
     return (
         <div>
@@ -99,8 +109,8 @@ const CreateVenue = () => {
                 <TextInput label="Description" withAsterisk {...form.getInputProps('description')} />
                 <TextInput label="Contact" withAsterisk {...form.getInputProps('contact')} />
 
-                <Dropzone mt={10} onDrop={(files) => setImage(files[0])} accept={IMAGE_MIME_TYPE} maxFiles={1}>
-                    {image ? <Text>{image.name}</Text> : <Text>Drop venue image here or click to select</Text>}
+                <Dropzone mt={10} onDrop={(files) => setVenueImage(files[0])} accept={IMAGE_MIME_TYPE} maxFiles={1}>
+                    {venueimage ? <Text>{venueimage.name}</Text> : <Text>Drop venue image here or click to select</Text>}
                 </Dropzone>
 
                 <Text size={20} mt={20} mb={10}>Halls</Text>
@@ -110,9 +120,15 @@ const CreateVenue = () => {
                         <NumberInput label="Capacity" withAsterisk placeholder="Enter Capacity" value={hall.capacity} onChange={(value) => updateHall(index, 'capacity', value)} />
                         <NumberInput label="Price per Hour" withAsterisk placeholder="Enter Price per Hour" value={hall.price_per_hour} onChange={(value) => updateHall(index, 'price_per_hour', value)} />
                         <MultiSelect label="Sports" data={sportsOptions} placeholder="Select sports" value={hall.sports} onChange={(value) => updateHall(index, 'sports', value)} />
-                        <Dropzone mt={10} onDrop={(files) => updateHall(index, 'image', files[0])} accept={IMAGE_MIME_TYPE} maxFiles={1}>
-                            {hall.image ? <Text>{hall.image.name}</Text> : <Text>Drop hall image here or click to select</Text>}
+                        <Dropzone
+                            mt={10}
+                            onDrop={(files) => updateHall(index, 'hallImage', files[0])} 
+                            accept={IMAGE_MIME_TYPE}
+                            maxFiles={1}
+                        >
+                            {hall.hallImage ? <Text>{hall.hallImage.name}</Text> : <Text>Drop hall image here or click to select</Text>}
                         </Dropzone>
+
                         <Button color="red" mt={10} leftIcon={<IconTrash />} onClick={() => removeHall(index)}>Remove Hall</Button>
                     </div>
                 ))}

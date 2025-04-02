@@ -120,7 +120,7 @@ const Home = () => {
                                     <li>Address: {venue.address_line_one}, {venue.town}, {venue.county}</li>
                                     <li>Eircode: {venue.eircode}</li>
                                     <li>Contact: {venue.contact}</li>
-
+                                    {venue.image}
                                     {venue.halls.length > 0 && (
                                         <li>
                                             Sports Available:

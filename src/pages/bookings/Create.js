@@ -108,8 +108,8 @@ const BookingForm = () => {
             <Text size={24} mb={5}>Create Booking</Text>
             <Text><strong>Time Slot:</strong> {timeslot?.start_time} - {timeslot?.end_time}</Text>
             <Text><strong>Price Per Hour:</strong> €{hallPrice}</Text>
-            <form onSubmit={form.onSubmit(handleSubmit)}>
-                <TextInput label="Price (€)" value={form.values.price_of_booking} disabled />
+            <form onSubmit={form.onSubmit(handleSubmit)}> <br></br>
+           <Text><strong>Price of Booking €{form.values.price_of_booking}</strong></Text> 
                 <Button mt={10} type="submit">Confirm Booking</Button>
             </form>
         </div>
