@@ -3,9 +3,10 @@ import { createContext } from "react";
 
 import { MantineProvider, AppShell, Footer } from '@mantine/core';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { Notifications } from "@mantine/notifications";
 
-import Header from './components/Header';
-import Navbar from './components/Navbar';
+
+
 import LoginForm from "./components/LoginForm";
 import RegisterForm from "./components/RegisterForm";
 import ProtectedRoute from './components/ProtectedRoute'
@@ -29,30 +30,43 @@ export const UserContext = createContext();
 const App = () => {
     // We wrap the entire app in the auth provider
     // We no longer need to pass the auth state down from here, all our routes can get it from the context instead    
-    
+
     return (
-        
+
         <div>
             <AuthProvider>
-            <MantineProvider withGlobalStyles withNormalizeCSS>
+                <MantineProvider
+                    withGlobalStyles
+                    withNormalizeCSS
+                    theme={{
+                        fontFamily: 'Nunito, sans-serif',
+                        headings: { fontFamily: 'Nunito, sans-serif' },
+                        defaultRadius: 'md',
+                    }}
+                >
                     <Router>
-                    <Notifications position="top-center" />                              
+                        <Notifications position="top-center" />
                         <AppShell
                             padding="md"
-                            navbar={<Navbar />}
-                            header= {<Header />}
+                            header={
+                                <div>
+                                  
+                                   
+                                </div>
+                            }
                             footer={<Footer height={60} p="xs"></Footer>}
                         >
+
                             <Routes>
                                 <Route path="/" element={<HomePage />} />
-                       
-                                {/* */}                                
+
+                                {/* */}
                                 <Route path='/' element={<ProtectedRoute />}>
                                     <Route path='/venues/Create' element={<CreateVenue />} />
                                     <Route path='/pages/venues/' element={<HomeVenue />} />
                                     <Route path='/userVenues' element={<HomeVenue />} />
-                                    <Route path='/venues/:id/edit' element={<EditVenue />} /> 
-                                    <Route path='/venues/:id' element={<SingleVenue />} /> 
+                                    <Route path='/venues/:id/edit' element={<EditVenue />} />
+                                    <Route path='/venues/:id' element={<SingleVenue />} />
 
 
                                     <Route path='/halls/Create/:id' element={<CreateHall />} />
@@ -64,7 +78,7 @@ const App = () => {
                                     <Route path="/booking/create/:venueId/:timeslotId" element={<CreateBooking />} />
                                     <Route path="/venues/:venueId/timeslots/:timeslotId/book" element={<CreateBooking />} />
                                 </Route>
-                        
+
 
                                 <Route path='/login' element={<LoginForm />} />
                                 <Route path='/register' element={<RegisterForm />} />
