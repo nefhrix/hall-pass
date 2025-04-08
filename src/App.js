@@ -1,14 +1,10 @@
 import { AuthProvider } from "./utils/useAuth";
 import { createContext } from "react";
 
-import { MantineProvider, AppShell, Header, Footer } from '@mantine/core';
+import { MantineProvider, AppShell, Footer } from '@mantine/core';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
-import { Notifications } from '@mantine/notifications';
-
-
-
-
+import Header from './components/Header';
 import Navbar from './components/Navbar';
 import LoginForm from "./components/LoginForm";
 import RegisterForm from "./components/RegisterForm";
@@ -44,7 +40,7 @@ const App = () => {
                         <AppShell
                             padding="md"
                             navbar={<Navbar />}
-                            header={<Header height={60} p="xs">Hall Pass</Header>}
+                            header= {<Header />}
                             footer={<Footer height={60} p="xs"></Footer>}
                         >
                             <Routes>
@@ -56,17 +52,17 @@ const App = () => {
                                     <Route path='/pages/venues/' element={<HomeVenue />} />
                                     <Route path='/userVenues' element={<HomeVenue />} />
                                     <Route path='/venues/:id/edit' element={<EditVenue />} /> 
-                                     <Route path='/venues/:id' element={<SingleVenue />} /> 
+                                    <Route path='/venues/:id' element={<SingleVenue />} /> 
 
 
-                                     <Route path='/halls/Create/:id' element={<CreateHall />} />
-                                     <Route path="/halls/:id/edit" element={<EditHall />} />
-                                     <Route path="/halls/:hallId" element={<SingleHall />} />
+                                    <Route path='/halls/Create/:id' element={<CreateHall />} />
+                                    <Route path="/halls/:id/edit" element={<EditHall />} />
+                                    <Route path="/halls/:hallId" element={<SingleHall />} />
 
-                                     <Route path="/venues/:hallId/timeslots/Create" element={<CreateTimeSlot />} />
+                                    <Route path="/venues/:hallId/timeslots/Create" element={<CreateTimeSlot />} />
 
-                                     <Route path="/booking/create/:venueId/:timeslotId" element={<CreateBooking />} />
-                                     <Route path="/venues/:venueId/timeslots/:timeslotId/book" element={<CreateBooking />} />
+                                    <Route path="/booking/create/:venueId/:timeslotId" element={<CreateBooking />} />
+                                    <Route path="/venues/:venueId/timeslots/:timeslotId/book" element={<CreateBooking />} />
                                 </Route>
                         
 
