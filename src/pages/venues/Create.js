@@ -91,7 +91,7 @@ const CreateVenue = () => {
             });
     
             showNotification({ title: 'Success', message: 'Venue created successfully!', color: 'green' });
-            // navigate('/userVenues');
+            navigate('/userVenues');
         } catch (err) {
             console.error("Error creating venue:", err.response?.data || err);
         }
