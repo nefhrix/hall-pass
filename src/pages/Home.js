@@ -1,14 +1,18 @@
 import React from 'react';
 import { Container, Button, Group, Text, Paper, Card, Grid, Flex, Title, Stack } from '@mantine/core';
 import { useNavigate } from 'react-router-dom';
-
+import Navbar from '../components/Navbar';
 const HomePage = () => {
     const navigate = useNavigate();
 
     return (
+        
+<>
+<Navbar size="lg" style={{ width: "60%" }}/>
+
         <Container size="xl" style={{ marginTop: '100px' }}>
-            {/* Hello Section */}
-            <Paper padding="xl" shadow="sm" style={{ marginBottom: '100px', backgroundColor: '#f7f7f7' }}>
+           
+            <Paper padding="xl"  style={{ marginBottom: '100px', backgroundColor: '#FFFFFF' }}>
                 <Stack align="center">
                     <Title order={1} align="center" style={{ marginBottom: '20px' }}>
                         Welcome to Hall-Pass
@@ -23,7 +27,7 @@ const HomePage = () => {
             
 
             
-            {/* Footer Section */}
+           
             <Paper padding="lg" shadow="xs" style={{ marginTop: '100px', backgroundColor: '#f7f7f7' }}>
                 <Group position="center">
                     <Text>© 2024 Hall Pass. </Text>
@@ -31,6 +35,7 @@ const HomePage = () => {
                 </Group>
             </Paper>
         </Container>
+        </>
     );
 };
 

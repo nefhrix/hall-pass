@@ -23,6 +23,7 @@ import EditHall from "./pages/halls/Edit"
 import SingleHall from "./pages/halls/SingleHall";
 
 import CreateTimeSlot from "./pages/timeslots/Create";
+import Navbar from "./components/Navbar";
 
 import CreateBooking from "./pages/bookings/Create"
 export const UserContext = createContext();
@@ -48,18 +49,13 @@ const App = () => {
                         <Notifications position="top-center" />
                         <AppShell
                             padding="md"
-                            header={
-                                <div>
-                                  
-                                   
-                                </div>
-                            }
+                            //navbar={<NoSearchNavbar/>}
                             footer={<Footer height={60} p="xs"></Footer>}
                         >
 
                             <Routes>
                                 <Route path="/" element={<HomePage />} />
-
+                                
                                 {/* */}
                                 <Route path='/' element={<ProtectedRoute />}>
                                     <Route path='/venues/Create' element={<CreateVenue />} />
@@ -70,7 +66,7 @@ const App = () => {
 
 
                                     <Route path='/halls/Create/:id' element={<CreateHall />} />
-                                    <Route path="/halls/:id/edit" element={<EditHall />} />
+                                    <Route path="/halls/:id/edit" element={<EditHall />} /> 
                                     <Route path="/halls/:hallId" element={<SingleHall />} />
 
                                     <Route path="/venues/:hallId/timeslots/Create" element={<CreateTimeSlot />} />

@@ -7,13 +7,13 @@ import { TextInput, Button, NumberInput, MultiSelect, Text } from "@mantine/core
 import { showNotification } from '@mantine/notifications';
 import { Dropzone, IMAGE_MIME_TYPE } from '@mantine/dropzone';
 import { IconPlus, IconTrash } from '@tabler/icons-react';
-
+import Navbar from '../../components/Navbar';
 const CreateVenue = () => {
     const { token } = useAuth();
     const navigate = useNavigate();
     const [userId, setUserId] = useState(null);
-    const [hallImage, setHallImage] = useState(null);
-    const [venueimage, setVenueImage] = useState(null);
+    const [image, setImage] = useState(null);
+ 
     const [halls, setHalls] = useState([]);
 
     const sportsOptions = [
@@ -44,7 +44,7 @@ const CreateVenue = () => {
     });
 
     const addHall = () => {
-        setHalls([...halls, { name: '', capacity: 0, price_per_hour: 0, sports: [], hallImage: null }]);
+        setHalls([...halls, { name: '', capacity: 0, price_per_hour: 0, sports: [], image: null }]);
     };
 
     const updateHall = (index, field, value) => {
@@ -65,10 +65,11 @@ const CreateVenue = () => {
         Object.entries(form.values).forEach(([key, value]) => formData.append(key, value));
     
         // Append the venue image if it exists
-        if (venueimage) {
-            formData.append('venueImage', venueimage);
+        if (!image) {
+            console.error(400);
         }
-    
+         else { formData.append('image', image); }
+
         halls.forEach((hall, index) => {
             formData.append(`halls[${index}][name]`, hall.name);
             formData.append(`halls[${index}][capacity]`, hall.capacity);
@@ -76,8 +77,8 @@ const CreateVenue = () => {
             hall.sports.forEach((sport, sportIndex) => {
                 formData.append(`halls[${index}][sports][${sportIndex}]`, sport);
             });
-            if (hall.hallImage) {
-                formData.append(`halls[${index}][hallImage]`, hall.hallImage);
+            if (hall.image) {
+                formData.append(`halls[${index}][image]`, hall.image);
             }
         });
         for (let [key, value] of formData.entries()) {
@@ -86,11 +87,11 @@ const CreateVenue = () => {
         
         try {
             await axios.post('https://hall-pass-main-ea0ukq.laravel.cloud/api/venues', formData, {
-                headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data' },
+                headers: { Authorization: `Bearer ${token}`},
             });
     
             showNotification({ title: 'Success', message: 'Venue created successfully!', color: 'green' });
-            navigate('/userVenues');
+            // navigate('/userVenues');
         } catch (err) {
             console.error("Error creating venue:", err.response?.data || err);
         }
@@ -99,9 +100,11 @@ const CreateVenue = () => {
     
 
     return (
+        <>
         <div>
+            <Navbar />
             <Text size={24} mb={5}>Create a Venue</Text>
-            <form onSubmit={form.onSubmit(handleSubmit)}>
+            <form onSubmit={form.onSubmit(handleSubmit)} enctype='multipart/form-data'>
                 <TextInput label="Address Line One" withAsterisk {...form.getInputProps('address_line_one')} />
                 <TextInput label="Town" withAsterisk {...form.getInputProps('town')} />
                 <TextInput label="County" withAsterisk {...form.getInputProps('county')} />
@@ -109,8 +112,8 @@ const CreateVenue = () => {
                 <TextInput label="Description" withAsterisk {...form.getInputProps('description')} />
                 <TextInput label="Contact" withAsterisk {...form.getInputProps('contact')} />
 
-                <Dropzone mt={10} onDrop={(files) => setVenueImage(files[0])} accept={IMAGE_MIME_TYPE} maxFiles={1}>
-                    {venueimage ? <Text>{venueimage.name}</Text> : <Text>Drop venue image here or click to select</Text>}
+                <Dropzone mt={10} onDrop={(files) => setImage(files[0])} accept={IMAGE_MIME_TYPE} maxFiles={1}>
+                    {image ? <Text>{image.name}</Text> : <Text>Drop venue image here or click to select</Text>}
                 </Dropzone>
 
                 <Text size={20} mt={20} mb={10}>Halls</Text>
@@ -122,11 +125,11 @@ const CreateVenue = () => {
                         <MultiSelect label="Sports" data={sportsOptions} placeholder="Select sports" value={hall.sports} onChange={(value) => updateHall(index, 'sports', value)} />
                         <Dropzone
                             mt={10}
-                            onDrop={(files) => updateHall(index, 'hallImage', files[0])} 
+                            onDrop={(files) => updateHall(index, 'image', files[0])} 
                             accept={IMAGE_MIME_TYPE}
                             maxFiles={1}
                         >
-                            {hall.hallImage ? <Text>{hall.hallImage.name}</Text> : <Text>Drop hall image here or click to select</Text>}
+                            {hall.image ? <Text>{hall.image.name}</Text> : <Text>Drop hall image here or click to select</Text>}
                         </Dropzone>
 
                         <Button color="red" mt={10} leftIcon={<IconTrash />} onClick={() => removeHall(index)}>Remove Hall</Button>
@@ -137,6 +140,7 @@ const CreateVenue = () => {
                 <Button mt={20} type="submit" disabled={!userId}>{userId ? 'Submit' : 'Loading User...'}</Button>
             </form>
         </div>
+        </>
     );
 };
 

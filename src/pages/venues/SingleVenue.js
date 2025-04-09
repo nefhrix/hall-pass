@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../utils/useAuth";
 import { Loader, Alert, Text, Button, Card, Group } from "@mantine/core";
-
+import Navbar from "../../components/Navbar";
 const SingleVenue = () => {
     const { token } = useAuth();
     const navigate = useNavigate();
@@ -94,6 +94,8 @@ const SingleVenue = () => {
     if (error) return <Alert color="red">{error}</Alert>;
 
     return (
+        <>
+        <Navbar />
         <div>
             <Text size={24} mb={5}>Venue Details</Text>
             <ul>
@@ -174,6 +176,7 @@ const SingleVenue = () => {
                 <Text color="gray">No halls available.</Text>
             )}
         </div>
+        </>
     );
 };
 

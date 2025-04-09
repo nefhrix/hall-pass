@@ -8,8 +8,9 @@ const Navbar = ({ searchBar }) => {
   const { logout, token } = useAuth();
   const navigate = useNavigate();
 
+
   return (
-    <Container fluid px="md" py="sm" style={{ backgroundColor: '#f8f9fa' }}>
+    <Container fluid px="md" py="sm" style={{ backgroundColor: '#FFFFFF' }}>
       <Flex justify="space-between" align="center" style={{ position: 'relative' }}>
         <div style={{ display: 'flex', alignItems: 'center' }}>
           <Text size="xl" weight={700} style={{ fontSize: '64px' }}>
@@ -17,9 +18,14 @@ const Navbar = ({ searchBar }) => {
           </Text>
         </div>
 
-        <div style={{ flex: 1, display: 'flex', justifyContent: 'center' }}>
+
+        {searchBar ? (
+          <div style={{ flex: 1, display: 'flex', justifyContent: 'center' }}>
           {searchBar}
         </div>
+        ) : ""}
+
+        
 
         <div>
           <Flex align="center" gap="md">
@@ -71,7 +77,7 @@ const Navbar = ({ searchBar }) => {
                 rightIcon={<IconLogout />}
                 onClick={() => {
                   logout();
-                  navigate('/login', { replace: true });
+                  navigate('/', { replace: true });
                 }}
               >
                 Logout

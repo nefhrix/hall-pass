@@ -5,7 +5,7 @@ import { useAuth } from "../../utils/useAuth";
 import { Loader, Alert, Text, Button, Card, Group, Badge } from "@mantine/core";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
-
+import { Image } from "@mantine/core";
 const SingleHall = () => {
     const { token } = useAuth();
     const { hallId } = useParams();
@@ -47,12 +47,12 @@ const SingleHall = () => {
         url: slot.status === "Available" ? `/venues/${hall.venue_id}/timeslots/${slot.id}/book` : "#"
     }));
 
-    
+
     const nextAvailableSlot = hall.timeslots
         .filter(slot => slot.status === "Available") //Filter by avaliable status timeslots
         .sort((a, b) => new Date(a.date) - new Date(b.date))[0]; //Converted to date objects for comparison czu its easier. a - b makes sure the earliest date comes first
 
-    
+
     // const jumpToNextAvailable = () => {
     //     if (nextAvailableSlot && calendarRef) {
     //         calendarRef.getApi().gotoDate(nextAvailableSlot.date); //calendar ref api makes sure i can use the fullcalendar api methods. gotoDate is a method which changes the calendar view to the date of nextAvaliableTimeslot
@@ -61,22 +61,22 @@ const SingleHall = () => {
 
     const jumpToNextAvailable = () => {
         if (!calendarRef || !hall.timeslots.length) return;
-    
+
         const calendarApi = calendarRef.getApi();
         const currentDate = calendarApi.getDate(); // Get the current view date
-    
+
         // Find next available slot after the current date
         const futureSlots = hall.timeslots
             .filter(slot => slot.status === "Available" && new Date(slot.date) > currentDate) //same code as the next avaliable slot except im checking to see if the next slots date is in the  future (i.e NOT this current slot that its already jumped to)
             .sort((a, b) => new Date(a.date) - new Date(b.date));
-    
+
         if (futureSlots.length > 0) {
             calendarApi.gotoDate(futureSlots[0].date); // Jump to the next available slot
         } else {
-            alert("No more available slots."); 
+            alert("No more available slots.");
         }
     };
-    
+
 
     return (
         <div style={{ height: "100vh", padding: "20px" }}>
@@ -96,17 +96,30 @@ const SingleHall = () => {
                         )}
                     </Group>
                 </ul>
+                <Link to={`/halls/${hall.id}/edit?venue_id=${hall.venue_id}`}>
+                    <Button mt={10} variant="filled" color="blue">
+                        Edit Hall
+                    </Button>
+                </Link>
+
                 <Link to={`/venues/${hall.venue_id}`}>
                     <Button mt={10} variant="outline">Back to Venue</Button>
                 </Link>
+
             </Card>
 
-            
+            <Image
+
+                radius="md"
+                src={`https://fls-9e923d8a-ed6d-4a5e-88eb-9bb073742a2c.laravel.cloud/${hall.image}`}
+                alt="Random unsplash image"
+            />
+
 
             {/* Button to Jump to Next Available Time Slot */}
-            <Button 
-                mb={10} 
-                color="blue" 
+            <Button
+                mb={10}
+                color="blue"
                 onClick={jumpToNextAvailable}
                 disabled={!nextAvailableSlot}
             >

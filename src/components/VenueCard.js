@@ -39,7 +39,7 @@ const VenueCard = ({ venue }) => {
     >
       <Card.Section mb="md" style={{ borderRadius: 12, overflow: "hidden" }}>
       <Image
-  src={`https://fls-9e923d8a-ed6d-4a5e-88eb-9bb073742a2c.laravel.cloud/${venue.image}`} 
+  src={`https://fls-9ea28465-7423-46c3-b756-0811265ccb34.laravel.cloud/${venue.image}`} 
   height={200} 
   fit="cover" 
   alt="Venue"

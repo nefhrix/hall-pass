@@ -33,7 +33,7 @@ const RegisterForm = () => {
 
       localStorage.setItem("user", JSON.stringify(userData)); // Store user data correctly
       login(form.email, form.password); // Log in after successful registration
-      navigate("/");
+      navigate("/pages/venues");
     } else {
       console.error("Unexpected API response structure:", res.data);
     }

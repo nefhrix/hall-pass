@@ -126,7 +126,7 @@ const Home = () => {
   }}
 >
   {allSports.map((sport) => (
-    <Badge key={sport} size="md" variant={selectedSport === sport ? "filled" : "light"} color={selectedSport === sport ? "yellow" : "gray"} onClick={() => handleSportFilter(sport)} style={{cursor: "pointer", display: "flex", alignItems: "center", fontSize: "1.2rem", padding: "15px", border: "1px solid", borderColor: selectedSport === sport ? "yellow" : "gray", borderRadius: "8px", transition: "background-color 0.3s, transform 0.2s", }}
+    <Badge key={sport} size="sm" variant={selectedSport === sport ? "filled" : "light"} color={selectedSport === sport ? "yellow" : "gray"} onClick={() => handleSportFilter(sport)} style={{cursor: "pointer", display: "flex", alignItems: "center", fontSize: "1.2rem", padding: "25px", border: "0.5px solid", borderColor: selectedSport === sport ? "yellow" : "gray", borderRadius: "8px", transition: "background-color 0.3s, transform 0.2s", }}
       onMouseEnter={(e) => {
         e.target.style.backgroundColor = "#f0f0f0";
         e.target.style.transform = "scale(1.05)";
