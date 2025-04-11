@@ -48,7 +48,7 @@ const EditHall = () => {
                     name, // Set the name field
                     capacity: Number(capacity),
                     price_per_hour: Number(price_per_hour),
-                    sports: sports.map((sport) => String(sport)), // Convert to string for MultiSelect
+                    sports: sports.map((sport) => String(sport)),
                 });
                 setLoading(false);
             })
@@ -69,7 +69,7 @@ const EditHall = () => {
         e.preventDefault();
 
         try {
-            const res = await axios.patch(
+            const res = await axios.post(
                 `https://hall-pass-main-ea0ukq.laravel.cloud/api/halls/${hallId}`, // Only place where hallId is used
                 formValues,
                 { headers: { Authorization: `Bearer ${token}` } }

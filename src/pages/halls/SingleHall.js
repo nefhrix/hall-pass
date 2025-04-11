@@ -2,10 +2,12 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../utils/useAuth";
-import { Loader, Alert, Text, Button, Card, Group, Badge } from "@mantine/core";
+import { Loader, Alert, Text, Button, Card, Group, Badge, Image, Flex, Center } from "@mantine/core";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
-import { Image } from "@mantine/core";
+
+
+
 const SingleHall = () => {
     const { token } = useAuth();
     const { hallId } = useParams();
@@ -23,6 +25,7 @@ const SingleHall = () => {
                 { headers: { Authorization: `Bearer ${token}` } }
             );
             setHall(res.data.data);
+            console.log(res.data.data)
             setLoading(false);
         } catch (err) {
             console.error("Error fetching hall details:", err);
@@ -79,54 +82,73 @@ const SingleHall = () => {
 
 
     return (
-        <div style={{ height: "100vh", padding: "20px" }}>
-            <Text size={24} mb={5}>Hall Details</Text>
-            <Card shadow="sm" p="lg" mb={20}>
+        <div style={{ padding: "20px" }}>
+          <Group align="start" position="apart" grow wrap="nowrap" spacing="xl">
+            
+           
+            <div style={{ flex: 2 }}>
+              <Text size="xl" fw={700} mb="xs">{hall.name || "Hall Details"}</Text>
+      
+          
+              <Group spacing="xs" mb="lg">
+                <Image
+                  radius="md"
+                  src={`https://fls-9ea28465-7423-46c3-b756-0811265ccb34.laravel.cloud/${hall.image}`}
+                  alt="Main hall image"
+                  width="100%"
+                  height={400}
+                  fit="cover"
+                  style={{ borderRadius: 12 }}
+                />
+              </Group>
+      
+            
+              <Card shadow="sm" p="lg" withBorder mb="lg">
+                <h3>Hall Information :</h3>
                 <ul>
-                    <li><strong>Capacity:</strong> {hall.capacity} people</li>
-                    <li><strong>Price per Hour:</strong> €{hall.price_per_hour}</li>
-                    <li><strong>Sports Available:</strong></li>
-                    <Group>
-                        {hall.sports.length > 0 ? (
-                            hall.sports.map((sport, index) => (
-                                <Badge key={index} color="blue">{sport.sport}</Badge>
-                            ))
-                        ) : (
-                            <Text color="gray">No sports listed</Text>
-                        )}
-                    </Group>
+                
+                  <li><strong>Capacity:</strong> {hall.capacity} people</li>
+                  <li><strong>Price per Hour:</strong> €{hall.price_per_hour}</li>
+                  <li><strong>Facilities:</strong> Toilets, Changing Rooms, Parking </li>
+                  <li><strong>WheelChair Accessible:</strong> Yes </li>
+                  <li><strong>Sports Available:</strong>  {hall.sports.length > 0 ? (
+                    hall.sports.map((sport, index) => (
+                      <Badge key={index} color="blue">{sport.sport}</Badge>
+                    ))
+                  ) : (
+                    <Text color="gray">No sports listed</Text>
+                  )} </li>
                 </ul>
-                <Link to={`/halls/${hall.id}/edit?venue_id=${hall.venue_id}`}>
-                    <Button mt={10} variant="filled" color="blue">
-                        Edit Hall
-                    </Button>
-                </Link>
-
-                <Link to={`/venues/${hall.venue_id}`}>
-                    <Button mt={10} variant="outline">Back to Venue</Button>
-                </Link>
-
-            </Card>
-
-            <Image
-
-                radius="md"
-                src={`https://fls-9e923d8a-ed6d-4a5e-88eb-9bb073742a2c.laravel.cloud/${hall.image}`}
-                alt="Random unsplash image"
-            />
-
-
-            {/* Button to Jump to Next Available Time Slot */}
-            <Button
-                mb={10}
+      
+               
+      
+                <Group mt="md">
+                  <Link to={`/halls/${hall.id}/edit?venue_id=${hall.venue_id}`}>
+                    <Button variant="filled" color="blue">Edit Hall</Button>
+                  </Link>
+                  <Link to={`/venues/${hall.venue_id}`}>
+                    <Button variant="outline">Back to Venue</Button>
+                  </Link>
+                  <Link to={`/venues/${hall.id}/timeslots/create`}>
+                    <Button variant="outline">Create Timeslot</Button>
+                  </Link>
+                </Group>
+              </Card>
+      
+           
+              <Button
+                mb="sm"
                 color="blue"
                 onClick={jumpToNextAvailable}
                 disabled={!nextAvailableSlot}
-            >
+              >
                 {nextAvailableSlot ? "Jump to Next Available Slot" : "No Available Slots"}
-            </Button>
-
-            <FullCalendar
+              </Button>
+            </div>
+      
+           
+            <Card shadow="sm" p="md" withBorder style={{ flex: 1, top: 45, height: "fit-content" }}>
+              <FullCalendar
                 ref={setCalendarRef}
                 plugins={[dayGridPlugin]}
                 initialView="dayGridMonth"
@@ -134,34 +156,35 @@ const SingleHall = () => {
                 height="auto"
                 eventDisplay="block"
                 headerToolbar={{
-                    left: "prevYear,prev,next,nextYear today",
-                    center: "title",
-                    right: "dayGridMonth,dayGridWeek,dayGridDay",
+                  left: "prevYear,prev,next,nextYear today",
+                  center: "title",
+                  right: "dayGridMonth,dayGridWeek,dayGridDay",
                 }}
                 eventContent={({ event }) => (
-                    <div style={{
-                        padding: "5px",
-                        fontSize: "0.9rem",
-                        textAlign: "center",
-                        color: "white",
-                        borderRadius: "5px",
-                        width: "100%",
-                        display: "block",
-                        backgroundColor: event.backgroundColor,
-                    }}>
-                        <strong>{event.startStr.slice(11, 16)} - {event.endStr.slice(11, 16)}</strong>
-                        <div>{event.title}</div>
-                    </div>
+                  <div style={{
+                    padding: "5px",
+                    fontSize: "0.9rem",
+                    textAlign: "center",
+                    color: "white",
+                    borderRadius: "5px",
+                    backgroundColor: event.backgroundColor,
+                  }}>
+                    <strong>{event.startStr.slice(11, 16)} - {event.endStr.slice(11, 16)}</strong>
+                    <div>{event.title}</div>
+                  </div>
                 )}
                 eventClick={(info) => {
-                    if (info.event.url !== "#") {
-                        info.jsEvent.preventDefault();
-                        navigate(info.event.url);
-                    }
+                  if (info.event.url !== "#") {
+                    info.jsEvent.preventDefault();
+                    navigate(info.event.url);
+                  }
                 }}
-            />
+              />
+            </Card>
+          </Group>
         </div>
-    );
+      );
+      
 };
 
 export default SingleHall;

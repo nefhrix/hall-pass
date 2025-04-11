@@ -127,7 +127,7 @@ const CreateVenue = () => {
                             mt={10}
                             onDrop={(files) => updateHall(index, 'image', files[0])} 
                             accept={IMAGE_MIME_TYPE}
-                            maxFiles={1}
+                            maxFiles={3}
                         >
                             {hall.image ? <Text>{hall.image.name}</Text> : <Text>Drop hall image here or click to select</Text>}
                         </Dropzone>
