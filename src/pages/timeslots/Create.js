@@ -55,7 +55,7 @@ const CreateTimeSlot = () => {
                     label="Please enter your desired start time. Use the numbers on your keyboard,or click the clock icon at the end of this bar! (24 hour time format)"
                     type="time"
                     withAsterisk
-                    {...form.getInputProps('start_time')}  // Bind to form state
+                    {...form.getInputProps('start_time')}  // add to form state
                 />
 
                 
@@ -63,7 +63,7 @@ const CreateTimeSlot = () => {
                     label="Please enter your desired end time. Use the numbers on your keyboard,or click the clock icon at the end of this bar! (24 hour time format)"
                     type="time"
                     withAsterisk
-                    {...form.getInputProps('end_time')}  // Bind to form state
+                    {...form.getInputProps('end_time')}  // add to form state
                 />
 
                

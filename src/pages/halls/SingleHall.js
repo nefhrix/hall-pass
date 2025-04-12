@@ -53,7 +53,7 @@ const SingleHall = () => {
 
     const nextAvailableSlot = hall.timeslots
         .filter(slot => slot.status === "Available") //Filter by avaliable status timeslots
-        .sort((a, b) => new Date(a.date) - new Date(b.date))[0]; //Converted to date objects for comparison czu its easier. a - b makes sure the earliest date comes first
+        .sort((a, b) => new Date(a.date) - new Date(b.date))[0]; //Converted to date objects for comparison cuz its easier. a - b makes sure the earliest date comes first
 
 
     // const jumpToNextAvailable = () => {

@@ -44,8 +44,8 @@ const EditHall = () => {
             .then((res) => {
                 const { name, capacity, price_per_hour, sports } = res.data.data;
                 setFormValues({
-                    venue_id: venueId, // Ensure venue_id stays as venueId
-                    name, // Set the name field
+                    venue_id: venueId, 
+                    name, 
                     capacity: Number(capacity),
                     price_per_hour: Number(price_per_hour),
                     sports: sports.map((sport) => String(sport)),
@@ -70,7 +70,7 @@ const EditHall = () => {
 
         try {
             const res = await axios.post(
-                `https://hall-pass-main-ea0ukq.laravel.cloud/api/halls/${hallId}`, // Only place where hallId is used
+                `https://hall-pass-main-ea0ukq.laravel.cloud/api/halls/${hallId}`, 
                 formValues,
                 { headers: { Authorization: `Bearer ${token}` } }
             );

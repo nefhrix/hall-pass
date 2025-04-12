@@ -157,7 +157,7 @@ const EditVenue = () => {
                     {...form.getInputProps('contact')}
                 />
 
-                {/* Hidden Input for User ID */}
+              
                 <input type="hidden" {...form.getInputProps('user_id')} />
 
                 <Button mt={10} type="submit">Save Changes</Button>

@@ -2,10 +2,10 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useAuth } from "../../utils/useAuth";
 import { useLocation, useNavigate } from "react-router-dom";
-import {Container,TextInput,Button,Text,Flex,SimpleGrid,Group,Divider,Badge} from "@mantine/core";
+import { Container, TextInput, Button, Text, Flex, SimpleGrid, Group, Divider, Badge } from "@mantine/core";
 import VenueCard from "../../components/VenueCard";
-import Navbar from "../../components/Navbar"; 
-import { FaFutbol, FaTableTennis, FaBaseballBall, FaVolleyballBall} from 'react-icons/fa'; 
+import Navbar from "../../components/Navbar";
+import { FaFutbol, FaTableTennis, FaBaseballBall, FaVolleyballBall } from 'react-icons/fa';
 
 const sportIcons = {
   Basketball: <FaBaseballBall size={19} />,
@@ -61,7 +61,7 @@ const Home = () => {
   };
 
   const handleSportFilter = (sport) => {
-    const newSport = selectedSport === sport ? null : sport; 
+    const newSport = selectedSport === sport ? null : sport;
     setSelectedSport(newSport);
     applyFilters(searchQuery, newSport);
   };
@@ -105,42 +105,56 @@ const Home = () => {
 
   return (
     <>
-      <Navbar searchBar={<TextInput placeholder="Search venues..." value={searchQuery}  onChange={(e) => handleSearch(e.target.value)} size="lg" style={{ width: "60%" }}/>}/>
+      <Navbar searchBar={<TextInput placeholder="Search venues..." value={searchQuery} onChange={(e) => handleSearch(e.target.value)} size="lg" style={{ width: "60%" }} />} />
       <Container fluid py="xl" px="xl">
         {msg && (
           <Text mb="md" color="red" align="center" fw={500}>
             {msg}
           </Text>
         )}
-
-<Group
-  position="center"
-  spacing="xs"
-  mb="m"
-  mt="sm"
-  style={{
-    display: "flex",
-    justifyContent: "space-evenly",
-    flexWrap: "wrap",
-    width: "100%",
-  }}
+  <Flex
+  justify="space-evenly"
+  wrap="wrap"
+  align="center"
+  my="md"
+  style={{ width: "100%" }}
 >
   {allSports.map((sport) => (
-    <Badge key={sport} size="sm" variant={selectedSport === sport ? "filled" : "light"} color={selectedSport === sport ? "yellow" : "gray"} onClick={() => handleSportFilter(sport)} style={{cursor: "pointer", display: "flex", alignItems: "center", fontSize: "1.2rem", padding: "25px", border: "0.5px solid", borderColor: selectedSport === sport ? "yellow" : "gray", borderRadius: "8px", transition: "background-color 0.3s, transform 0.2s", }}
+    <div
+      key={sport}
+      onClick={() => handleSportFilter(sport)}
+      style={{
+        cursor: "pointer",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: "20px 30px",
+        borderRadius: "5px",
+        backgroundColor: selectedSport === sport ? "#E49B0F" : "#FFFFFF",
+        transition: "all 0.2s ease",
+        boxShadow: selectedSport === sport ? "0 2px 8px rgba(0, 0, 0, 0.1)" : "none",
+        minWidth: "450px",
+        fontSize: "1.2rem",
+      }}
       onMouseEnter={(e) => {
-        e.target.style.backgroundColor = "#f0f0f0";
-        e.target.style.transform = "scale(1.05)";
+        if (selectedSport !== sport) {
+          e.currentTarget.style.backgroundColor = "#E49B0F";
+        }
+        e.currentTarget.style.transform = "scale(1.05)";
       }}
       onMouseLeave={(e) => {
-        e.target.style.backgroundColor = "";
-        e.target.style.transform = "";
+        e.currentTarget.style.backgroundColor =
+          selectedSport === sport ? "#E49B0F" : "#FFFFFF";
+        e.currentTarget.style.transform = "scale(1)";
       }}
     >
-      <span style={{ verticalAlign: "middle" }}>{sportIcons[sport]}</span>
-      <span style={{ marginLeft: "10px" }}>{sport}</span>
-    </Badge>
+      <span style={{ marginRight: "10px" }}>{sportIcons[sport]}</span>
+      <span>{sport}</span>
+    </div>
   ))}
-</Group>
+</Flex>
+
+
 
 
 
