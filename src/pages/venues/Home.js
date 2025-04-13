@@ -112,54 +112,48 @@ const Home = () => {
             {msg}
           </Text>
         )}
-  <Flex
-  justify="space-evenly"
-  wrap="wrap"
-  align="center"
-  my="md"
-  style={{ width: "100%" }}
->
-  {allSports.map((sport) => (
-    <div
-      key={sport}
-      onClick={() => handleSportFilter(sport)}
-      style={{
-        cursor: "pointer",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        padding: "20px 30px",
-        borderRadius: "5px",
-        backgroundColor: selectedSport === sport ? "#E49B0F" : "#FFFFFF",
-        transition: "all 0.2s ease",
-        boxShadow: selectedSport === sport ? "0 2px 8px rgba(0, 0, 0, 0.1)" : "none",
-        minWidth: "450px",
-        fontSize: "1.2rem",
-      }}
-      onMouseEnter={(e) => {
-        if (selectedSport !== sport) {
-          e.currentTarget.style.backgroundColor = "#E49B0F";
-        }
-        e.currentTarget.style.transform = "scale(1.05)";
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.backgroundColor =
-          selectedSport === sport ? "#E49B0F" : "#FFFFFF";
-        e.currentTarget.style.transform = "scale(1)";
-      }}
-    >
-      <span style={{ marginRight: "10px" }}>{sportIcons[sport]}</span>
-      <span>{sport}</span>
-    </div>
-  ))}
-</Flex>
-
-
-
-
-
-
-
+        <Flex
+          justify="space-evenly"
+          wrap="wrap"
+          align="center"
+          my="md"
+          style={{ width: "100%" }}
+        >
+          {allSports.map((sport) => (
+            <div
+              key={sport}
+              onClick={() => handleSportFilter(sport)}
+              style={{
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                padding: "20px 30px",
+                borderRadius: "5px",
+                backgroundColor: selectedSport === sport ? "#E49B0F" : "#FFFFFF",
+                transition: "all 0.2s ease",
+                boxShadow: selectedSport === sport ? "0 2px 8px rgba(0, 0, 0, 0.1)" : "none",
+                minWidth: "400px",
+                fontSize: "1.2rem",
+              }}
+              onMouseEnter={(e) => {
+                if (selectedSport !== sport) {
+                  e.currentTarget.style.backgroundColor = "#E49B0F";
+                }
+                e.currentTarget.style.transform = "scale(1.05)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor =
+                  selectedSport === sport ? "#E49B0F" : "#FFFFFF";
+                e.currentTarget.style.transform = "scale(1)";
+              }}
+            >
+              <span style={{ marginRight: "10px" }}>{sportIcons[sport]}</span>
+              <span>{sport}</span>
+            </div>
+          ))}
+        </Flex>
+        
         {roleId === 2 && (
           <Flex justify="center" mb="lg">
             <Button onClick={() => navigate("/venues/create")} color="teal" size="md">
