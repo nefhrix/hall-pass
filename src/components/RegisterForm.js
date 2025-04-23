@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useAuth } from "../utils/useAuth";
 import { TextInput, PasswordInput, Button, Container, Stack, Select } from "@mantine/core";
+import { showNotification } from '@mantine/notifications';
 
 const RegisterForm = () => {
   const navigate = useNavigate();
@@ -34,12 +35,14 @@ const RegisterForm = () => {
       localStorage.setItem("user", JSON.stringify(userData)); // Store user data correctly
       login(form.email, form.password); // Log in after successful registration
       navigate("/pages/venues");
+      showNotification({ title: 'Success', message: 'Registration successful!', color: 'green' });
     } else {
       console.error("Unexpected API response structure:", res.data);
     }
   })
   .catch((err) => {
     console.error("Registration error:", err);
+    showNotification({ title: 'Error', message: 'Registration failed.', color: 'red' });
   });
   };
 

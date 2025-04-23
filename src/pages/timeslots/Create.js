@@ -2,8 +2,9 @@ import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAuth } from "../../utils/useAuth";
 import { useForm } from '@mantine/form';
-import { TextInput, Button, Select, Text } from "@mantine/core";
+import { TextInput, Button, Select, Text, Container, Stack } from "@mantine/core";
 import { DatePicker,TimeInput } from '@mantine/dates';  // Import DatePicker from @mantine/dates
+import Navbar from "../../components/Navbar";
 
 const CreateTimeSlot = () => {
     const { token } = useAuth();
@@ -38,11 +39,13 @@ const CreateTimeSlot = () => {
     };
 
     return (
-        <div>
-            <Text size={24} mb={5}>Create Time Slot</Text>
+        <>
+        <Navbar />
+        <Container size="md" p="sm">
+        <h1>Create Timeslot</h1>
             <form onSubmit={form.onSubmit(handleSubmit)}>
 
-                
+                <Stack spacing="md">
                 <DatePicker
                     label="Date"
                     withAsterisk
@@ -75,8 +78,10 @@ const CreateTimeSlot = () => {
                 />
 
                 <Button mt={10} type="submit">Create Time Slot</Button>
+                </Stack>
             </form>
-        </div>
+        </Container>
+        </>
     );
 };
 

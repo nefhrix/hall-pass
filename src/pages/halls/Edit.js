@@ -2,7 +2,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useAuth } from "../../utils/useAuth";
-import { TextInput, Button, NumberInput, MultiSelect, Text } from "@mantine/core";
+import { TextInput, Button, NumberInput, MultiSelect, Text, Container, Stack } from "@mantine/core";
 import Navbar from "../../components/Navbar";
 const EditHall = () => {
     const { token } = useAuth();
@@ -87,9 +87,10 @@ const EditHall = () => {
     return (
         <>
     <Navbar />
-        <div>
-            <Text size={24} mb={5}>Edit Hall</Text>
+    <Container size="md" p="sm">
+    <h1>Edit Hall</h1>
             <form onSubmit={handleSubmit}>
+            <Stack spacing="md">
                 <TextInput label="Venue ID"  style={{display: 'none'}} value={formValues.venue_id} />
                 
                 <TextInput
@@ -121,8 +122,9 @@ const EditHall = () => {
                 />
                 
                 <Button mt={10} type="submit">Save Changes</Button>
+                </Stack>
             </form>
-        </div>
+        </Container>
         </>
     );
 };

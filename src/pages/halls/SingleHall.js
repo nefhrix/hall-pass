@@ -5,8 +5,7 @@ import { useAuth } from "../../utils/useAuth";
 import { Loader, Alert, Text, Button, Card, Group, Badge, Image, Flex, Center } from "@mantine/core";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
-
-
+import Navbar from "../../components/Navbar";
 
 const SingleHall = () => {
     const { token } = useAuth();
@@ -82,6 +81,8 @@ const SingleHall = () => {
 
 
     return (
+      <>
+      <Navbar />
         <div style={{ padding: "20px" }}>
           <Group align="start" position="apart" grow wrap="nowrap" spacing="xl">
             
@@ -183,6 +184,7 @@ const SingleHall = () => {
             </Card>
           </Group>
         </div>
+        </>
       );
       
 };

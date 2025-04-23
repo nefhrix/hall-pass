@@ -3,7 +3,9 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../utils/useAuth';
 import {TextInput,PasswordInput,Button,Paper,Stack,Title} from '@mantine/core';
+import { showNotification } from '@mantine/notifications';
   
+
 const LoginForm = () => {
     const navigate = useNavigate();
     const {login} = useAuth();
@@ -16,10 +18,14 @@ const LoginForm = () => {
     const handleSubmit = (e) => {
         // The form will cause a refresh by default. We don't want that, because our state will disappear.
         e.preventDefault();        
-
+      try{
         login(form.email, form.password)
-           
         navigate('/')
+        showNotification({ title: 'Success', message: 'Login successful!', color: 'green' });
+      }
+      catch{
+        showNotification({ title: 'Error', message: 'Login failed.', color: 'red' });
+      }
     }
 
     const handleChange = (e) => {

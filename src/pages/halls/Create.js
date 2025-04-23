@@ -3,8 +3,9 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../../utils/useAuth";
 import { useForm } from "@mantine/form";
-import { TextInput, Button, NumberInput, MultiSelect, Text } from "@mantine/core";
+import { TextInput, Button, NumberInput, MultiSelect, Text, Container, Stack } from "@mantine/core";
 import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone";
+import Navbar from "../../components/Navbar";
 
 const CreateHall = () => {
     const { token } = useAuth();
@@ -87,11 +88,12 @@ const CreateHall = () => {
     };
 
     return (
-        <div>
-            <Text size={24} mb={5}>
-                Create a Hall
-            </Text>
+        <>
+        <Navbar />
+        <Container size="md" p="sm">
+            <h1>Create a Hall</h1>
             <form onSubmit={form.onSubmit(handleSubmit)}>
+            <Stack spacing="md">
                 <TextInput
                     label="Hall Name"
                     withAsterisk
@@ -156,8 +158,10 @@ const CreateHall = () => {
                 <Button mt={10} type="submit">
                     Submit
                 </Button>
+                </Stack>
             </form>
-        </div>
+        </Container>
+        </>
     );
 };
 

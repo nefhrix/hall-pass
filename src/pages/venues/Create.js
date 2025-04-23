@@ -3,11 +3,12 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from "../../utils/useAuth";
 import { useForm } from '@mantine/form';
-import { TextInput, Button, NumberInput, MultiSelect, Text } from "@mantine/core";
+import { TextInput, Button, NumberInput, MultiSelect, Text, Container, Stack} from "@mantine/core";
 import { showNotification } from '@mantine/notifications';
 import { Dropzone, IMAGE_MIME_TYPE } from '@mantine/dropzone';
 import { IconPlus, IconTrash } from '@tabler/icons-react';
 import Navbar from '../../components/Navbar';
+
 const CreateVenue = () => {
     const { token } = useAuth();
     const navigate = useNavigate();
@@ -101,10 +102,11 @@ const CreateVenue = () => {
 
     return (
         <>
-        <div>
             <Navbar />
-            <Text size={24} mb={5}>Create a Venue</Text>
+            <Container size="md" p="sm">
+            <h1>Create a Venue</h1>
             <form onSubmit={form.onSubmit(handleSubmit)} enctype='multipart/form-data'>
+            <Stack spacing="md">
                 <TextInput label="Address Line One" withAsterisk {...form.getInputProps('address_line_one')} />
                 <TextInput label="Town" withAsterisk {...form.getInputProps('town')} />
                 <TextInput label="County" withAsterisk {...form.getInputProps('county')} />
@@ -138,8 +140,9 @@ const CreateVenue = () => {
 
                 <Button mt={10} leftIcon={<IconPlus />} onClick={addHall}>Add Hall</Button>
                 <Button mt={20} type="submit" disabled={!userId}>{userId ? 'Submit' : 'Loading User...'}</Button>
+                </Stack>
             </form>
-        </div>
+        </Container>
         </>
     );
 };

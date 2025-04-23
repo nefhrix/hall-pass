@@ -2,6 +2,7 @@ import React from 'react';
 import { Container, Button, Group, Text, Paper, Card, Grid, Flex, Title, Stack } from '@mantine/core';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
+
 const HomePage = () => {
     const navigate = useNavigate();
 

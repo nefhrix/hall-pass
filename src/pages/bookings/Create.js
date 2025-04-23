@@ -3,7 +3,8 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../../utils/useAuth";
 import { useForm } from "@mantine/form";
-import { TextInput, Button, Text, Alert } from "@mantine/core";
+import { TextInput, Button, Text, Alert, Container, Stack } from "@mantine/core";
+import Navbar from "../../components/Navbar";
 
 const BookingForm = () => {
     const { token, user } = useAuth();
@@ -104,15 +105,18 @@ const BookingForm = () => {
     if (error) return <Alert color="red" mb={10}>{error}</Alert>;
 
     return (
-        <div>
-            <Text size={24} mb={5}>Create Booking</Text>
+        <>
+        <Navbar />
+        <Container size="md" p="sm">
+        <h1>Create Booking</h1>
             <Text><strong>Time Slot:</strong> {timeslot?.start_time} - {timeslot?.end_time}</Text>
             <Text><strong>Price Per Hour:</strong> €{hallPrice}</Text>
             <form onSubmit={form.onSubmit(handleSubmit)}> <br></br>
            <Text><strong>Price of Booking €{form.values.price_of_booking}</strong></Text> 
                 <Button mt={10} type="submit">Confirm Booking</Button>
             </form>
-        </div>
+        </Container>
+        </>
     );
 };
 

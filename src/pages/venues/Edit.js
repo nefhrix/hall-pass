@@ -3,8 +3,9 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAuth } from "../../utils/useAuth";
 import { useForm } from '@mantine/form';
-import { TextInput, Button, Text, Loader, Alert } from "@mantine/core";
+import { TextInput, Button, Text, Loader, Alert, Container, Stack } from "@mantine/core";
 import { showNotification } from '@mantine/notifications';
+import Navbar from "../../components/Navbar";
 
 const EditVenue = () => {
     const { token } = useAuth(); 
@@ -112,9 +113,12 @@ const EditVenue = () => {
     if (error) return <Alert color="red">{error}</Alert>; // Show error if fetching failed
 
     return (
-        <div>
-            <Text size={24} mb={5}>Edit Venue</Text>
+        <>
+        <Navbar />
+        <Container size="md" p="sm">
+            <h1>Edit Venue</h1>
             <form onSubmit={form.onSubmit(handleSubmit)}>
+            <Stack spacing="md">
                 <TextInput
                     label="Address Line One"
                     withAsterisk
@@ -161,8 +165,10 @@ const EditVenue = () => {
                 <input type="hidden" {...form.getInputProps('user_id')} />
 
                 <Button mt={10} type="submit">Save Changes</Button>
+                </Stack>
             </form>
-        </div>
+        </Container>
+        </>
     );
 };
 
