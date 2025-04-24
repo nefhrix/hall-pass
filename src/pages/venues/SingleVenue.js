@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import axios from 'axios';
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../utils/useAuth";
-import { Loader, Alert, Text, Button, Card, Group } from "@mantine/core";
+import { Loader, Alert, Text, Button, Card, Group, Image, Stack, Flex} from "@mantine/core";
 import Navbar from "../../components/Navbar";
 const SingleVenue = () => {
     const { token } = useAuth();
@@ -96,8 +96,29 @@ const SingleVenue = () => {
     return (
         <>
         <Navbar />
-        <div>
-            <Text size={24} mb={5}>Venue Details</Text>
+        <div style={{ padding: "20px" }}>
+        <Group align="start" position="apart" grow wrap="nowrap" spacing="xl">
+        <Stack spacing="md">
+        
+        
+        
+
+            <Text size="xl" fw={700} mb="xs">{venue.address_line_one}</Text>
+            <Flex justify="space-between" align="stretch">
+            <Group spacing="xs" mb="lg" style={{flex: 2}}>
+                            <Image
+                              radius="md"
+                              src={`https://fls-9ea28465-7423-46c3-b756-0811265ccb34.laravel.cloud/${venue.image}`}
+                              alt="Main venue image"
+                              width="100%"
+                              height={400}
+                              fit="cover"
+                              style={{ borderRadius: 12 }}
+                            />
+                          </Group>
+
+            <Card ml="lg" height="100%" shadow="sm" p="lg" withBorder mb="lg" style={{flex: 2}}>
+                          <h3>Venue Information :</h3>    
             <ul>
                 <li><strong>Address:</strong> {venue.address_line_one}</li>
                 <li><strong>Town:</strong> {venue.town}</li>
@@ -105,7 +126,6 @@ const SingleVenue = () => {
                 <li><strong>Eircode:</strong> {venue.eircode}</li>
                 <li><strong>Description:</strong> {venue.description}</li>
                 <li><strong>Contact:</strong> {venue.contact}</li>
-                <li>{venue.image}</li> 
             </ul>
                 
             {deleteError && <Alert color="red">{deleteError}</Alert>}
@@ -135,9 +155,15 @@ const SingleVenue = () => {
                     Back to Venues
                 </Button>
             </Link>
+            </Card>
 
-            {/* Display Halls */}
-            <Text size={20} mt={20} mb={10}>Halls in this Venue</Text>
+            </Flex>
+
+
+
+            <div style={{flex: 2}}>
+            <Card shadow="sm" p="lg" withBorder mb="lg">
+            <h3>Halls in this Venue</h3>
             {hallDeleteError && <Alert color="red">{hallDeleteError}</Alert>}
 
             {venue.halls && venue.halls.length > 0 ? (
@@ -175,6 +201,10 @@ const SingleVenue = () => {
             ) : (
                 <Text color="gray">No halls available.</Text>
             )}
+            </Card>
+            </div>
+            </Stack>
+            </Group>
         </div>
         </>
     );

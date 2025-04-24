@@ -1,11 +1,9 @@
 import { AuthProvider } from "./utils/useAuth";
 import { createContext } from "react";
 
-import { MantineProvider, AppShell, Footer } from '@mantine/core';
+import { MantineProvider, AppShell, Footer, Paper, Group, Text } from '@mantine/core';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Notifications } from "@mantine/notifications";
-
-
 
 import LoginForm from "./components/LoginForm";
 import RegisterForm from "./components/RegisterForm";
@@ -23,7 +21,6 @@ import EditHall from "./pages/halls/Edit"
 import SingleHall from "./pages/halls/SingleHall";
 
 import CreateTimeSlot from "./pages/timeslots/Create";
-import Navbar from "./components/Navbar";
 
 import CreateBooking from "./pages/bookings/Create"
 export const UserContext = createContext();
@@ -50,7 +47,12 @@ const App = () => {
                         <AppShell
                             padding="md"
                             //navbar={<NoSearchNavbar/>}
-                            footer={<Footer height={60} p="xs"></Footer>}
+                            // footer={<Footer>
+                            //     <Group position="center">
+                            //         <Text>© 2024 Hall Pass.</Text>
+                            //         <Text>All Rights Reserved.</Text>
+                            //     </Group>
+                            // </Footer>}
                         >
 
                             <Routes>
@@ -83,6 +85,12 @@ const App = () => {
                     </Router>
                 </MantineProvider>
             </AuthProvider>
+            <Footer mt="md">
+                <Group position="center">
+                    <Text>© 2024 Hall Pass.</Text>
+                    <Text>All Rights Reserved.</Text>
+                </Group>
+            </Footer>
         </div>
     );
 };

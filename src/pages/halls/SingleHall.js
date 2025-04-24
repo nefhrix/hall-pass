@@ -88,7 +88,7 @@ const SingleHall = () => {
             
            
             <div style={{ flex: 2 }}>
-              <Text size="xl" fw={700} mb="xs">{hall.name || "Hall Details"}</Text>
+              <Text size="xl" fw={700} mb="xl">{hall.name || "Hall Details"}</Text>
       
           
               <Group spacing="xs" mb="lg">
@@ -111,7 +111,7 @@ const SingleHall = () => {
                   <li><strong>Capacity:</strong> {hall.capacity} people</li>
                   <li><strong>Price per Hour:</strong> €{hall.price_per_hour}</li>
                   <li><strong>Facilities:</strong> Toilets, Changing Rooms, Parking </li>
-                  <li><strong>WheelChair Accessible:</strong> Yes </li>
+                  <li><strong>Wheelchair Accessible:</strong> Yes </li>
                   <li><strong>Sports Available:</strong>  {hall.sports.length > 0 ? (
                     hall.sports.map((sport, index) => (
                       <Badge key={index} color="blue">{sport.sport}</Badge>
@@ -148,7 +148,7 @@ const SingleHall = () => {
             </div>
       
            
-            <Card shadow="sm" p="md" withBorder style={{ flex: 1, top: 45, height: "fit-content" }}>
+            <Card mt="xs" shadow="sm" p="md" withBorder style={{ flex: 1, top: 45, height: "100%" }}>
               <FullCalendar
                 ref={setCalendarRef}
                 plugins={[dayGridPlugin]}

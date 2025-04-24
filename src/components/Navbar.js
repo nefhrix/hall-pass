@@ -1,16 +1,15 @@
 // Navbar.js
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../utils/useAuth';
-import { Button, Flex, Container, Text } from '@mantine/core';
+import { Button, Flex, Container, Text, Header} from '@mantine/core';
 import { IconArrowRight, IconLogin, IconLogout, IconLock } from '@tabler/icons-react';
 
 const Navbar = ({ searchBar }) => {
   const { logout, token } = useAuth();
   const navigate = useNavigate();
 
-
   return (
-    <Container fluid px="md" py="sm" style={{ backgroundColor: '#FFFFFF' }}>
+    <Container fluid px="md" style={{ backgroundColor: '#FFFFFF'}}>
       <Flex justify="space-between" align="center" style={{ position: 'relative' }}>
         <div style={{ display: 'flex', alignItems: 'center' }}>
           <Text size="xl" weight={700} style={{ fontSize: '64px' }}>

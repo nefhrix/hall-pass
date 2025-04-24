@@ -24,17 +24,6 @@ const HomePage = () => {
                     
                 </Stack>
             </Paper>
-
-            
-
-            
-           
-            <Paper padding="lg" shadow="xs" style={{ marginTop: '100px', backgroundColor: '#f7f7f7' }}>
-                <Group position="center">
-                    <Text>© 2024 Hall Pass. </Text>
-                    <Text>All Rights Reserved.</Text>
-                </Group>
-            </Paper>
         </Container>
         </>
     );
