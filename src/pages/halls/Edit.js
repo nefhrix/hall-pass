@@ -69,7 +69,7 @@ const EditHall = () => {
         e.preventDefault();
 
         try {
-            const res = await axios.post(
+            const res = await axios.patch(
                 `https://hall-pass-main-ea0ukq.laravel.cloud/api/halls/${hallId}`, 
                 formValues,
                 { headers: { Authorization: `Bearer ${token}` } }

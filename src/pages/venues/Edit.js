@@ -67,7 +67,7 @@ const EditVenue = () => {
     }, [token]);
 
     const handleSubmit = (values) => {
-        axios.post(`https://hall-pass-main-ea0ukq.laravel.cloud/api/venues/${id}`, { ...values, user_id: userId }, {
+        axios.patch(`https://hall-pass-main-ea0ukq.laravel.cloud/api/venues/${id}`, { ...values, user_id: userId }, {
             headers: { Authorization: `Bearer ${token}` },
         })
             .then((res) => {
