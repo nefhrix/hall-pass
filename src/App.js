@@ -87,7 +87,7 @@ const App = () => {
             </AuthProvider>
             <Footer mt="md">
                 <Group position="center">
-                    <Text>© 2024 Hall Pass.</Text>
+                    <Text>© 2024 HallPass.</Text>
                     <Text>All Rights Reserved.</Text>
                 </Group>
             </Footer>
