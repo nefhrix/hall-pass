@@ -1,6 +1,6 @@
 import React from 'react';
 import { Container, Button, Group, Text, Paper, Card, Grid, Flex, Title, Stack } from '@mantine/core';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 
 const HomePage = () => {
@@ -21,7 +21,9 @@ const HomePage = () => {
                     <Text align="center" size="lg" style={{ maxWidth: '800px' }}>
                         Whether you want to book a venue, rent your hall or reduce admin hassle, HallPass offers services fit for all. 
                     </Text>
-                    
+                    <Link to={`/pages/venues`}>
+                    <Button variant="outline">Explore Venues</Button>
+                  </Link>
                 </Stack>
             </Paper>
         </Container>
