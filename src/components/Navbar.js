@@ -1,7 +1,7 @@
 // Navbar.js
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../utils/useAuth';
-import { Button, Flex, Container, Text, Header} from '@mantine/core';
+import { Button, Flex, Container, Text, Header } from '@mantine/core';
 import { IconArrowRight, IconLogin, IconLogout, IconLock } from '@tabler/icons-react';
 
 const Navbar = ({ searchBar }) => {
@@ -9,34 +9,28 @@ const Navbar = ({ searchBar }) => {
   const navigate = useNavigate();
 
   return (
-    <Container fluid px="md" style={{ backgroundColor: '#FFFFFF'}}>
+    <Container fluid px="md" style={{ backgroundColor: '#FFFFFF' }}>
       <Flex justify="space-between" align="center" style={{ position: 'relative' }}>
         <div style={{ display: 'flex', alignItems: 'center' }}>
-          <Text size="xl" weight={700} style={{ fontSize: '64px' }}>
-            HallPass
-          </Text>
+          <Link to="/" style={{ textDecoration: 'none', color: 'inherit' }}>
+            <Text size="xl" weight={700} style={{ fontSize: '64px' }}>
+              HallPass
+            </Text>
+          </Link>
         </div>
 
 
         {searchBar ? (
           <div style={{ flex: 1, display: 'flex', justifyContent: 'center' }}>
-          {searchBar}
-        </div>
+            {searchBar}
+          </div>
         ) : ""}
 
-        
+
 
         <div>
           <Flex align="center" gap="md">
-            <Button
-              rightIcon={<IconArrowRight size={18} />}
-              size="lg"
-              color="dark"
-              component={Link}
-              to="/"
-            >
-              Home
-            </Button>
+
 
             <Button
               component={Link}

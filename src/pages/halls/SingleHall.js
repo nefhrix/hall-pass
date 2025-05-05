@@ -101,6 +101,9 @@ const SingleHall = () => {
     <>
       <Navbar />
       <div style={{ padding: "20px" }}>
+      <Link to={`/venues/${hall.venue_id}`}>
+                  <Button  mb={25} variant="light">Back to Venue</Button>
+                </Link>
         <Group align="start" position="apart" grow wrap="nowrap" spacing="xl">
 
 
@@ -124,7 +127,6 @@ const SingleHall = () => {
             <Card shadow="sm" p="lg" withBorder mb="lg">
               <h3>Hall Information :</h3>
               <ul>
-
                 <li><strong>Capacity:</strong> {hall.capacity} people</li>
                 <li><strong>Price per Hour:</strong> €{hall.price_per_hour}</li>
                 <li><strong>Facilities:</strong> Toilets, Changing Rooms, Parking </li>
@@ -144,9 +146,6 @@ const SingleHall = () => {
                 <Link to={`/halls/${hall.id}/edit?venue_id=${hall.venue_id}`}>
                   <Button variant="filled" color="blue">Edit Hall</Button>
                 </Link>
-                <Link to={`/venues/${hall.venue_id}`}>
-                  <Button variant="outline">Back to Venue</Button>
-                </Link>
                 {roleId !== 1 && (
                   <Link to={`/venues/${hall.id}/timeslots/create`}>
                     <Button variant="outline">Create Timeslot</Button>
@@ -154,16 +153,6 @@ const SingleHall = () => {
                 )}
               </Group>
             </Card>
-
-
-            <Button
-              mb="sm"
-              color="blue"
-              onClick={jumpToNextAvailable}
-              disabled={!nextAvailableSlot}
-            >
-              {nextAvailableSlot ? "Jump to Next Available Slot" : "No Available Slots"}
-            </Button>
           </div>
 
 
@@ -207,6 +196,15 @@ const SingleHall = () => {
                 }
               }}
             />
+                   <Button
+              mb="sm"
+              color="blue"
+              onClick={jumpToNextAvailable}
+              disabled={!nextAvailableSlot}
+              mt={25}
+            >
+              {nextAvailableSlot ? "Jump to Next Available Slot" : "No Available Slots"}
+            </Button>
           </Card>
         </Group>
       </div>

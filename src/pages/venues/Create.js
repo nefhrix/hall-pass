@@ -40,7 +40,18 @@ const CreateVenue = () => {
             eircode: '',
             description: '',
             contact: '',
-            halls : [{}],
+            halls: [{}],
+        },
+        validate: {
+            address_line_one: (value) => (value ? null : 'Address is required'),
+            town: (value) => (value ? null : 'Town is required'),
+            county: (value) => (value ? null : 'County is required'),
+            eircode: (value) =>
+                !value ? 'Eircode is required' :
+                value.length > 7 ? 'Eircode must be at most 7 characters' :
+                null,
+            description: (value) => (value ? null : 'Description is required'),
+            contact: (value) => (value ? null : 'Contact is required'),
         },
     });
 
