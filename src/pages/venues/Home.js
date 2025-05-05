@@ -203,20 +203,28 @@ import axios from "axios";
 import { useAuth } from "../../utils/useAuth";
 import { useLocation, useNavigate } from "react-router-dom";
 import {
-  Container, TextInput, Button, Text, Flex, SimpleGrid, Group,
-  Divider, Stack, Box, MediaQuery, Paper
+  Container,
+  TextInput,
+  Button,
+  Text,
+  Flex,
+  SimpleGrid,
+  Divider,
 } from "@mantine/core";
 import VenueCard from "../../components/VenueCard";
 import Navbar from "../../components/Navbar";
 import {
-  FaFutbol, FaTableTennis, FaBaseballBall, FaVolleyballBall
-} from 'react-icons/fa';
+  FaFutbol,
+  FaTableTennis,
+  FaBaseballBall,
+  FaVolleyballBall,
+} from "react-icons/fa";
 
 const sportIcons = {
   Basketball: <FaBaseballBall size={19} />,
   Football: <FaFutbol size={19} />,
   Volleyball: <FaVolleyballBall size={19} />,
-  Badminton: <FaTableTennis size={19} />
+  Badminton: <FaTableTennis size={19} />,
 };
 
 const Home = () => {
@@ -231,9 +239,12 @@ const Home = () => {
 
   const fetchUserRole = async () => {
     try {
-      const res = await axios.get(`https://hall-pass-main-ea0ukq.laravel.cloud/api/user`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await axios.get(
+        `https://hall-pass-main-ea0ukq.laravel.cloud/api/user`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
       if (res.data.roles.length > 0) {
         setRoleId(res.data.roles[0].id);
       }
@@ -249,9 +260,12 @@ const Home = () => {
     if (roleId === 2) url = `/api/userVenues`;
 
     try {
-      const res = await axios.get(`https://hall-pass-main-ea0ukq.laravel.cloud${url}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await axios.get(
+        `https://hall-pass-main-ea0ukq.laravel.cloud${url}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
       setVenues(res.data.data);
       setFilteredVenues(res.data.data);
     } catch (e) {
@@ -311,18 +325,15 @@ const Home = () => {
     <>
       <Navbar
         searchBar={
-          <MediaQuery smallerThan="sm" styles={{ width: '100%' }}>
-            <TextInput
-              placeholder="Search venues..."
-              value={searchQuery}
-              onChange={(e) => handleSearch(e.target.value)}
-              size="md"
-              style={{ width: "100%" }}
-            />
-          </MediaQuery>
+          <TextInput
+            placeholder="Search venues..."
+            value={searchQuery}
+            onChange={(e) => handleSearch(e.target.value)}
+            size="lg"
+            style={{ width: "100%", maxWidth: "600px" }}
+          />
         }
       />
-
       <Container fluid py="xl" px="md">
         {msg && (
           <Text mb="md" color="red" align="center" fw={500}>
@@ -330,28 +341,35 @@ const Home = () => {
           </Text>
         )}
 
-        <SimpleGrid
-          cols={4}
-          spacing="md"
-          breakpoints={[
-            { maxWidth: 1200, cols: 3 },
-            { maxWidth: 992, cols: 2 },
-            { maxWidth: 768, cols: 1 }
-          ]}
-          my="lg"
+        <Flex
+          justify="center"
+          wrap="wrap"
+          align="center"
+          gap="md"
+          my="md"
+          style={{ width: "100%" }}
         >
           {allSports.map((sport) => (
-            <Paper
+            <div
               key={sport}
-              withBorder
-              radius="md"
-              p="md"
               onClick={() => handleSportFilter(sport)}
               style={{
                 cursor: "pointer",
-                backgroundColor: selectedSport === sport ? "#E49B0F" : "#FFFFFF",
-                boxShadow: selectedSport === sport ? "0 2px 8px rgba(0, 0, 0, 0.1)" : "none",
-                transition: "all 0.2s ease"
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                padding: "16px 24px",
+                borderRadius: "5px",
+                backgroundColor:
+                  selectedSport === sport ? "#E49B0F" : "#FFFFFF",
+                transition: "all 0.2s ease",
+                boxShadow:
+                  selectedSport === sport
+                    ? "0 2px 8px rgba(0, 0, 0, 0.1)"
+                    : "none",
+                minWidth: "250px",
+                fontSize: "1rem",
+                textAlign: "center",
               }}
               onMouseEnter={(e) => {
                 if (selectedSport !== sport) {
@@ -365,17 +383,19 @@ const Home = () => {
                 e.currentTarget.style.transform = "scale(1)";
               }}
             >
-              <Group position="center">
-                <Box mr="xs">{sportIcons[sport]}</Box>
-                <Text>{sport}</Text>
-              </Group>
-            </Paper>
+              <span style={{ marginRight: "10px" }}>{sportIcons[sport]}</span>
+              <span>{sport}</span>
+            </div>
           ))}
-        </SimpleGrid>
+        </Flex>
 
         {roleId === 2 && (
           <Flex justify="center" mb="lg">
-            <Button onClick={() => navigate("/venues/create")} color="teal" size="md">
+            <Button
+              onClick={() => navigate("/venues/create")}
+              color="teal"
+              size="md"
+            >
               + Add New Venue
             </Button>
           </Flex>
@@ -384,9 +404,11 @@ const Home = () => {
         <Divider my="md" />
 
         {roleId === 2 && (
-          <Text ta="center" size="xl" fw={700} mb="lg">
-            View All Of Your Venues
-          </Text>
+          <div style={{ padding: "16px", textAlign: "center" }}>
+            <Text size="xl" weight={700} color="black">
+              View All Of Your Venues
+            </Text>
+          </div>
         )}
 
         {filteredVenues.length === 0 ? (
