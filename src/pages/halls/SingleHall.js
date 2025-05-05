@@ -170,10 +170,12 @@ const HallDetails = ({ hall, roleId }) => (
       </ul>
 
       <Group mt="md">
+      {roleId === 2 && (
         <Link to={`/halls/${hall.id}/edit?venue_id=${hall.venue_id}`}>
           <Button variant="filled" color="blue">Edit Hall</Button>
         </Link>
-        {roleId !== 1 && (
+         )}
+         {roleId === 2 && (
           <Link to={`/venues/${hall.id}/timeslots/create`}>
             <Button variant="outline">Create Timeslot</Button>
           </Link>

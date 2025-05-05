@@ -14,36 +14,69 @@ const RegisterForm = () => {
     email: "",
     password: "",
     c_password: "",
-    roles: "", // Added roles field
+    roles: "",
   });
+
+  const [errors, setErrors] = useState({});
+
+  const validateForm = () => {
+    const newErrors = {};
+
+    if (!form.name.trim()) newErrors.name = "Name is required";
+    if (!form.email.trim()) {
+      newErrors.email = "Email is required";
+    } else if (!/\S+@\S+\.\S+/.test(form.email)) {
+      newErrors.email = "Invalid email format";
+    }
+
+    if (!form.password) {
+      newErrors.password = "Password is required";
+    } else if (form.password.length < 6) {
+      newErrors.password = "Password must be at least 6 characters";
+    }
+
+    if (form.password !== form.c_password) {
+      newErrors.c_password = "Passwords do not match";
+    }
+
+    if (!form.roles) newErrors.roles = "Role is required";
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    axios
-  .post(`https://hall-pass-main-ea0ukq.laravel.cloud/api/register`, form)
-  .then((res) => {
-    console.log("Full API Response:", res.data); // Debugging step
-
-    if (res.data.success && res.data.data) {
-      const userData = {
-        id: res.data.data.roles?.[0]?.pivot?.user_id || null, // Extract user ID safely
-        name: res.data.data.name,
-        roles: res.data.data.roles,
-      };
-
-      localStorage.setItem("user", JSON.stringify(userData)); // Store user data correctly
-      login(form.email, form.password); // Log in after successful registration
-      navigate("/pages/venues");
-      showNotification({ title: 'Success', message: 'Registration successful!', color: 'green' });
-    } else {
-      console.error("Unexpected API response structure:", res.data);
+    if (!validateForm()) {
+      showNotification({ title: 'Validation Error', message: 'Please correct the form errors.', color: 'red' });
+      return;
     }
-  })
-  .catch((err) => {
-    console.error("Registration error:", err);
-    showNotification({ title: 'Error', message: 'Registration failed.', color: 'red' });
-  });
+
+    axios
+      .post(`https://hall-pass-main-ea0ukq.laravel.cloud/api/register`, form)
+      .then((res) => {
+        console.log("Full API Response:", res.data); 
+
+        if (res.data.success && res.data.data) {
+          const userData = {
+            id: res.data.data.roles?.[0]?.pivot?.user_id || null, 
+            name: res.data.data.name,
+            roles: res.data.data.roles,
+          };
+
+          localStorage.setItem("user", JSON.stringify(userData)); 
+          login(form.email, form.password); // Log in after successful registration
+          navigate("/pages/venues");
+          showNotification({ title: 'Success', message: 'Registration successful!', color: 'green' });
+        } else {
+          console.error("Unexpected API response structure:", res.data);
+        }
+      })
+      .catch((err) => {
+        console.error("Registration error:", err);
+        showNotification({ title: 'Error', message: 'Registration failed.', color: 'red' });
+      });
   };
 
   const handleChange = (e) => {
@@ -64,6 +97,7 @@ const RegisterForm = () => {
             name="name"
             value={form.name}
             onChange={handleChange}
+            error={errors.name}
             required
           />
           <TextInput
@@ -73,6 +107,7 @@ const RegisterForm = () => {
             type="email"
             value={form.email}
             onChange={handleChange}
+            error={errors.email}
             required
           />
           <PasswordInput
@@ -81,6 +116,7 @@ const RegisterForm = () => {
             name="password"
             value={form.password}
             onChange={handleChange}
+            error={errors.password}
             required
           />
           <PasswordInput
@@ -89,9 +125,9 @@ const RegisterForm = () => {
             name="c_password"
             value={form.c_password}
             onChange={handleChange}
+            error={errors.c_password}
             required
           />
-          {/* Dropdown for roles */}
           <Select
             label="Role"
             placeholder="Select a role"
@@ -102,6 +138,7 @@ const RegisterForm = () => {
               { value: "1", label: "I want to book venues" },
               { value: "2", label: "I want to rent my venue" },
             ]}
+            error={errors.roles}
             required
           />
           <Button type="submit" fullWidth>
@@ -114,3 +151,6 @@ const RegisterForm = () => {
 };
 
 export default RegisterForm;
+
+
+//banger video on form validaton https://www.freecodecamp.org/news/how-to-validate-forms-in-react/
